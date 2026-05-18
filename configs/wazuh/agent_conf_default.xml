@@ -1,0 +1,103 @@
+<agent_config>
+  <!-- ============================================ -->
+  <!-- BASELINE COMMUNE TOUS AGENTS                -->
+  <!-- ============================================ -->
+
+  <!-- Inventaire global -->
+  <wodle name="syscollector">
+    <disabled>no</disabled>
+    <interval>1h</interval>
+    <packages>yes</packages>
+    <os>yes</os>
+    <hardware>yes</hardware>
+    <ports>yes</ports>
+    <processes>yes</processes>
+  </wodle>
+
+  <!-- Rootcheck global -->
+  <rootcheck>
+    <disabled>no</disabled>
+    <frequency>43200</frequency>
+  </rootcheck>
+
+  <!-- SCA global -->
+  <sca>
+    <enabled>yes</enabled>
+    <interval>12h</interval>
+  </sca>
+
+  <!-- Active Response global -->
+  <active-response>
+    <disabled>no</disabled>
+  </active-response>
+
+</agent_config>
+
+<!-- ============================================ -->
+<!-- SECTION WINDOWS                             -->
+<!-- ============================================ -->
+<agent_config os="Windows">
+
+  <syscheck>
+    <disabled>no</disabled>
+    <frequency>43200</frequency>
+    <!-- Fichiers système critiques -->
+    <directories check_all="yes">C:\Windows\System32\drivers\etc</directories>
+    <directories check_all="yes" realtime="yes">C:\Users\Administrator</directories>
+    <ignore>C:\Windows\System32\LogFiles</ignore>
+    <ignore>C:\Windows\Temp</ignore>
+  </syscheck>
+
+  <!-- Logs Windows communs à toutes les VMs Windows -->
+  <localfile>
+    <location>Security</location>
+    <log_format>eventchannel</log_format>
+    <query>Event/System[EventID != 5145 and EventID != 5156]</query>
+  </localfile>
+
+  <localfile>
+    <location>System</location>
+    <log_format>eventchannel</log_format>
+  </localfile>
+
+  <localfile>
+    <location>Application</location>
+    <log_format>eventchannel</log_format>
+  </localfile>
+
+</agent_config>
+
+<!-- ============================================ -->
+<!-- SECTION LINUX                               -->
+<!-- ============================================ -->
+<agent_config os="Linux">
+
+  <syscheck>
+    <disabled>no</disabled>
+    <frequency>43200</frequency>
+    <!-- Répertoires système critiques communs -->
+    <directories check_all="yes" realtime="yes">/etc</directories>
+    <directories check_all="yes">/usr/bin</directories>
+    <directories check_all="yes">/usr/sbin</directories>
+    <directories check_all="yes">/bin</directories>
+    <directories check_all="yes">/sbin</directories>
+    <!-- Exclusions communes -->
+    <ignore>/etc/mtab</ignore>
+    <ignore>/etc/mnttab</ignore>
+    <ignore>/etc/hosts.deny</ignore>
+    <ignore>/etc/mail/statistics</ignore>
+  </syscheck>
+
+  <!-- Auth SSH commun à tous les Linux -->
+  <localfile>
+    <log_format>syslog</log_format>
+    <location>/var/log/auth.log</location>
+  </localfile>
+
+  <!-- Syslog commun -->
+  <localfile>
+    <log_format>syslog</log_format>
+    <location>/var/log/syslog</location>
+  </localfile>
+
+</agent_config>

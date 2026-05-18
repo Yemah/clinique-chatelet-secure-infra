@@ -1,0 +1,402 @@
+<!-- ============================================================ -->
+<!-- REGLES CUSTOM HDS - Clinique Le Chatelet (version corrigée) -->
+<!-- ============================================================ -->
+
+<group name="hds,local,">
+
+  <!-- ========================= -->
+  <!-- == AUTHENTIFICATION ==== -->
+  <!-- ========================= -->
+
+  <!-- Brute force SSH -->
+  <rule id="200000" level="10" frequency="5" timeframe="120">
+    <if_matched_sid>5716</if_matched_sid>
+    <description>HDS: Brute force SSH détecté</description>
+    <group>authentication_failures,pci_dss_10.2.4,hipaa_164.312.d,</group>
+  </rule>
+
+  <!-- Connexion root SSH -->
+  <rule id="200001" level="12">
+    <if_sid>5715</if_sid>
+    <match>root</match>
+    <description>HDS: Connexion SSH directe en root</description>
+    <group>authentication_success,pci_dss_10.2.5,hipaa_164.312.d,</group>
+  </rule>
+
+  <!-- Brute force AD -->
+  <rule id="200002" level="10" frequency="5" timeframe="120">
+    <if_matched_sid>60122</if_matched_sid>
+    <description>HDS: Brute force Active Directory (4625)</description>
+    <group>authentication_failures,pci_dss_10.2.4,hipaa_164.312.d,</group>
+  </rule>
+
+  <!-- Compte AD verrouillé -->
+  <rule id="200003" level="12">
+    <if_sid>60117</if_sid>
+    <description>HDS: Compte Active Directory verrouillé (4740)</description>
+    <group>authentication_failures,pci_dss_10.2.4,hipaa_164.312.d,</group>
+  </rule>
+
+  <!-- SSH hors heures ouvrables -->
+  <rule id="200004" level="10">
+    <if_sid>5715</if_sid>
+    <time>10 pm - 6 am</time>
+    <description>HDS: Connexion SSH hors heures ouvrables</description>
+    <group>policy_violation,hipaa_164.312.a.1,</group>
+  </rule>
+
+  <!-- AD hors heures ouvrables -->
+  <rule id="200005" level="10">
+    <if_sid>60106</if_sid>
+    <time>10 pm - 6 am</time>
+    <description>HDS: Connexion Active Directory hors heures ouvrables</description>
+    <group>policy_violation,hipaa_164.312.a.1,</group>
+  </rule>
+
+  <!-- Authelia MFA fail -->
+  <rule id="200006" level="8">
+    <if_sid>1002</if_sid>
+    <match>authelia</match>
+    <match>failed|denied|unauthorized|invalid</match>
+    <description>HDS: Échec authentification Authelia MFA</description>
+    <group>authentication_failures,hipaa_164.312.d,</group>
+  </rule>
+
+  <!-- Brute force Authelia -->
+  <rule id="200007" level="12" frequency="3" timeframe="60">
+    <if_matched_sid>200006</if_matched_sid>
+    <description>HDS: Brute force Authelia MFA</description>
+    <group>authentication_failures,hipaa_164.312.d,</group>
+  </rule>
+
+
+  <!-- ========================= -->
+  <!-- == PRIVILEGES / ESCALADE -->
+  <!-- ========================= -->
+
+  <rule id="200050" level="8">
+    <if_sid>5402</if_sid>
+    <description>HDS: Utilisation sudo sur serveur</description>
+    <group>pci_dss_10.2.5,hipaa_164.312.a.1,</group>
+  </rule>
+
+  <rule id="200051" level="12">
+    <if_sid>60116</if_sid>
+    <description>HDS: Ajout membre groupe privilégié AD</description>
+    <group>pci_dss_10.2.5,hipaa_164.312.a.2,</group>
+  </rule>
+
+  <rule id="200052" level="10">
+    <if_sid>60111</if_sid>
+    <description>HDS: Création nouveau compte Active Directory</description>
+    <group>pci_dss_10.2.5,hipaa_164.312.a.2,</group>
+  </rule>
+
+  <rule id="200053" level="10">
+    <if_sid>60113</if_sid>
+    <description>HDS: Suppression compte Active Directory</description>
+    <group>pci_dss_10.2.5,hipaa_164.312.a.2,</group>
+  </rule>
+
+  <rule id="200054" level="12">
+    <if_sid>60145</if_sid>
+    <description>HDS: Modification objet Active Directory</description>
+    <group>pci_dss_10.2.5,hipaa_164.312.a.1,</group>
+  </rule>
+
+
+<!-- Réduire le niveau de base des alertes OPNsense pour limiter les emails -->
+<rule id="200260" level="3" overwrite="yes">
+  <if_sid>87701</if_sid>
+  <description>HDS Tuning: pfSense block event - niveau réduit (base)</description>
+</rule>
+
+
+  <!-- ========================= -->
+  <!-- == ANTI-FORENSICS ======= -->
+  <!-- ========================= -->
+
+  <rule id="200100" level="14">
+    <if_sid>60103</if_sid>
+    <field name="win.system.eventID">^1102$|^517$</field>
+    <description>HDS: Nettoyage des journaux Windows (Anti-Forensics)</description>
+    <group>pci_dss_10.6,hipaa_164.312.b,mitre_T1070.001,</group>
+  </rule>
+
+  <rule id="200101" level="12">
+    <if_sid>60106</if_sid>
+    <field name="win.eventdata.logonType">^9$</field>
+    <description>HDS: Logon type 9 suspect (Pass-the-Hash possible)</description>
+    <group>authentication_suspicious,pci_dss_10.2.4,mitre_T1550.002,</group>
+  </rule>
+
+
+  <!-- ========================= -->
+  <!-- == FIM / INTEGRITÉ ====== -->
+  <!-- ========================= -->
+
+  <rule id="200150" level="12">
+    <if_sid>550</if_sid>
+    <field name="file">/var/www/clinique-app</field>
+    <description>HDS: Modification code application clinique</description>
+  </rule>
+
+  <rule id="200151" level="14">
+    <if_sid>550</if_sid>
+    <field name="file">/etc/authelia</field>
+    <description>HDS: Modification configuration Authelia - CRITIQUE</description>
+  </rule>
+
+  <rule id="200152" level="12">
+    <if_sid>550</if_sid>
+    <field name="file">/etc/nginx</field>
+    <description>HDS: Modification configuration Nginx proxy</description>
+  </rule>
+
+  <rule id="200153" level="14">
+    <if_sid>550</if_sid>
+    <field name="file">/opt/oracle/product/21c/dbhomeXE/network/admin</field>
+    <description>HDS: Modification configuration réseau Oracle - CRITIQUE</description>
+  </rule>
+
+  <rule id="200154" level="10">
+    <if_sid>554</if_sid>
+    <field name="file">/var/www/clinique-app</field>
+    <description>HDS: Nouveau fichier dans application clinique</description>
+  </rule>
+
+  <rule id="200155" level="12">
+    <if_sid>550</if_sid>
+    <field name="file">C:\\Windows\\SYSVOL</field>
+    <description>HDS: Modification SYSVOL/GPO sur DC</description>
+  </rule>
+
+  <!-- Ransomware -->
+  <rule id="200160" level="14">
+    <if_sid>550,554</if_sid>
+    <match>\.crypt$|\.enc$|\.locked$|\.ransom$|\.wannacry$</match>
+    <description>HDS: Extension suspecte détectée (Ransomware)</description>
+  </rule>
+
+
+  <!-- ========================= -->
+  <!-- == RÉSEAU / FIREWALL ==== -->
+  <!-- ========================= -->
+
+  <!-- Scan réseau OPNsense -->
+  <rule id="200200" level="10" frequency="10" timeframe="60">
+    <if_matched_sid>87701</if_matched_sid>
+    <description>HDS: Scan réseau détecté - blocages multiples OPNsense</description>
+  </rule>
+
+  <!-- Exception bruit réseau (ancien 100031) -->
+  <rule id="200201" level="0">
+    <if_sid>200200</if_sid>
+    <match>7680|igmp|224.0.0</match>
+    <description>HDS: Exception - Bruit réseau ignoré (WUDO / IGMP)</description>
+  </rule>
+
+  <!-- VLAN BACKUP (ancien 100031 bis) -->
+  <rule id="200202" level="12">
+    <if_sid>87701</if_sid>
+    <match>vlan0.444</match>
+    <description>HDS: Tentative accès non autorisé VLAN-BACKUP</description>
+  </rule>
+
+  <!-- Attaque WAN -->
+  <rule id="200203" level="10" frequency="20" timeframe="60">
+    <if_matched_sid>87701</if_matched_sid>
+    <match>vmx0</match>
+    <description>HDS: Attaque périmètre WAN - blocages massifs</description>
+  </rule>
+
+  <!-- OpenVPN fail -->
+  <rule id="200210" level="5">
+    <if_sid>7200</if_sid>
+    <match>TLS Error: TLS key negotiation failed|Authenticate/Decrypt packet error</match>
+    <description>HDS: Échec connexion OpenVPN</description>
+  </rule>
+
+  <!-- Brute force OpenVPN -->
+  <rule id="200211" level="10" frequency="5" timeframe="120">
+    <if_matched_sid>200210</if_matched_sid>
+    <same_source_ip />
+    <description>HDS: Brute force détecté sur OpenVPN</description>
+  </rule>
+
+  <!-- OpenVPN hors heures -->
+  <rule id="200212" level="8">
+    <if_sid>7200</if_sid>
+    <match>Peer Connection Initiated</match>
+    <time>10 pm - 6 am</time>
+    <description>HDS: Connexion OpenVPN hors heures ouvrables</description>
+  </rule>
+
+
+  <!-- ========================= -->
+  <!-- == TUNING HDS =========== -->
+  <!-- ========================= -->
+
+  <!-- Zabbix AJAX (ancien 100097) -->
+  <rule id="200250" level="0">
+    <if_sid>31533</if_sid>
+    <match>zabbix.php|jsrpc.php</match>
+    <description>HDS Tuning: Ignorer polling AJAX Zabbix</description>
+  </rule>
+
+  <!-- Oracle TCP resets (ancien 100098) -->
+  <rule id="200251" level="0">
+    <if_sid>200200</if_sid>
+    <match>1521</match>
+    <match>R,|A,</match>
+    <description>HDS Tuning: Ignorer paquets TCP orphelins Oracle</description>
+  </rule>
+
+
+<rule id="200252" level="0">
+  <if_sid>87702, 87701</if_sid>
+  <match>vlan0.999</match>
+  <description>HDS Tuning: Blocages VLAN-MGMT attendus</description>
+</rule>
+
+  <!-- Trafic suspect VLAN 999 -->
+  <rule id="200254" level="12">
+    <if_sid>87701</if_sid>
+    <match>vlan0.999</match>
+    <dstip>172.16.0.0/16</dstip>
+    <description>HDS: Trafic suspect VLAN-MGMT vers réseau interne</description>
+  </rule>
+
+
+  <rule id="200255" level="0">
+    <if_sid>87701</if_sid>
+    <match>239.255.255.250|255.255.255.255|10.10.20.255</match>
+    <description>HDS Tuning: Ignorer le bruit de fond Multicast/Broadcast global</description>
+  </rule>
+
+  <rule id="200256" level="0">
+    <if_sid>87701</if_sid>
+    <srcip>172.16.11.20</srcip>
+    <match>123</match>
+    <description>HDS Tuning: Ignorer requêtes NTP bloquées du SRV-ORACLE</description>
+  </rule>
+
+  <rule id="200257" level="0">
+    <if_sid>200202</if_sid>
+    <match>224.0.0.251|224.0.0.252</match>
+    <description>HDS Tuning: Ignorer découverte Windows (mDNS/LLMNR) sur VLAN BACKUP</description>
+  </rule>
+
+
+  <rule id="200258" level="0">
+    <if_sid>87701</if_sid>
+    <match>123,56</match> <description>HDS Tuning: Ignorer les requêtes NTP sortantes bloquées par le pare-feu</description>
+  </rule>
+
+  <rule id="200259" level="0">
+    <if_sid>200254, 87701</if_sid>
+    <match>138,138,|224.0.0.1</match> <description>HDS Tuning: Ignorer le bruit de fond Broadcast/NetBIOS/IGMP</description>
+  </rule>
+
+
+  <!-- ========================= -->
+  <!-- == GLPI / WEB =========== -->
+  <!-- ========================= -->
+
+  <!-- Correction regex GLPI (ancien 100110) -->
+  <rule id="200300" level="10">
+    <if_sid>31103</if_sid>
+    <match>glpi-access.log</match>
+    <regex> 4\d\d </regex>
+    <description>HDS: Erreur HTTP 4xx sur portail GLPI</description>
+  </rule>
+
+  <rule id="200301" level="12">
+    <if_sid>31103</if_sid>
+    <match>glpi-access.log</match>
+    <regex> 5\d\d </regex>
+    <description>HDS: Erreur HTTP 5xx critique sur portail GLPI</description>
+  </rule>
+
+
+  <!-- ========================= -->
+  <!-- == VEEAM ================ -->
+  <!-- ========================= -->
+
+  <rule id="200350" level="12">
+    <if_sid>60602</if_sid>
+    <match>Veeam</match>
+    <match>Error|Failed|failed</match>
+    <description>HDS: Erreur Veeam Backup - échec possible</description>
+  </rule>
+
+  <rule id="200351" level="14">
+    <if_sid>200350</if_sid>
+    <match>Oracle|oracle|HDS</match>
+    <description>HDS: Échec sauvegarde Oracle - CRITIQUE</description>
+  </rule>
+
+  <rule id="200352" level="0">
+    <if_sid>60602</if_sid>
+    <match>Veeam.Reporter.CachingService</match>
+    <match>5432</match>
+    <description>HDS Tuning: Erreur PostgreSQL Veeam ONE connue</description>
+  </rule>
+
+
+  <!-- ========================= -->
+  <!-- == ORACLE =============== -->
+  <!-- ========================= -->
+
+  <rule id="200400" level="12">
+    <if_sid>1002</if_sid>
+    <match>ORA-</match>
+    <description>HDS: Erreur Oracle dans alert log</description>
+  </rule>
+
+  <rule id="200401" level="14">
+    <if_sid>200400</if_sid>
+    <match>ORA-00600|ORA-07445|ORA-04031</match>
+    <description>HDS: Erreur interne Oracle critique</description>
+  </rule>
+
+  <rule id="200402" level="10">
+    <if_sid>1002</if_sid>
+    <match>ORA-01017|ORA-28000</match>
+    <description>HDS: Échec connexion ou compte verrouillé Oracle</description>
+  </rule>
+
+
+  <!-- ========================= -->
+  <!-- == VULNÉRABILITÉS ======= -->
+  <!-- ========================= -->
+
+  <rule id="200450" level="14">
+    <if_sid>23504</if_sid>
+    <field name="vulnerability.severity">Critical</field>
+    <description>HDS: Vulnérabilité CRITIQUE détectée</description>
+  </rule>
+
+  <rule id="200451" level="10">
+    <if_sid>23504</if_sid>
+    <field name="vulnerability.severity">High</field>
+    <description>HDS: Vulnérabilité HAUTE détectée</description>
+  </rule>
+
+
+  <!-- ========================= -->
+  <!-- == DISPONIBILITÉ ======== -->
+  <!-- ========================= -->
+
+  <rule id="200500" level="12">
+    <if_sid>2932</if_sid>
+    <description>HDS: Service système critique arrêté</description>
+  </rule>
+
+  <rule id="200501" level="12">
+    <if_sid>1002</if_sid>
+    <match>reboot|shutdown|halt</match>
+    <description>HDS: Redémarrage ou arrêt système détecté</description>
+  </rule>
+
+</group>

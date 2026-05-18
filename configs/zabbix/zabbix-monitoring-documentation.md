@@ -146,7 +146,7 @@ Firewall rules allow Zabbix passive polling (10050) and active agent (10051) fro
 
 ## Screenshot Guide
 
-| File | Content |
+| File (docs/assets/zabbix/) | Content |
 |---|---|
 | `zabbix-01-dashboard.png` | Main dashboard: 14 hosts, 19.67 vps, current problems |
 | `zabbix-02-host-monitoring.png` | All 14 hosts with interfaces, tags, item counts |

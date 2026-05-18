@@ -23,7 +23,7 @@
 
 ## 🎯 Le Défi
 
-Une clinique de rééducation fonctionnelle devait exposer son **application médicale Oracle monolithique** sur le Web, permettant aux soignants d'accéder à distance aux dossiers patients via un portail sécurisé — tout en respectant les exigences **HDS** (Hébergement de Données de Santé) et en garantissant une **disponibilité de 99.99%**.
+Une clinique de rééducation fonctionnelle devait exposer son **application médicale Oracle monolithique** sur le Web, permettant aux soignants d'accéder à distance aux dossiers patients via un portail sécurisé tout en respectant les exigences **HDS** (Hébergement de Données de Santé) et en garantissant une **disponibilité de 99.99%**.
 
 **Le problème :** Aucun pare-feu. Aucune segmentation. Aucune authentification. Des postes avec droits admin locaux. Le DNS pointant vers la box Internet. Une base Oracle directement accessible sur le LAN.
 
@@ -126,7 +126,7 @@ Deux OPNsense 26.1.3 en cluster actif/passif CARP avec synchronisation d'état p
 
 14 hôtes supervisés sur tous les VLANs avec observation dual-stack sur les firewalls (agent Zabbix + SNMP). La base Oracle dispose de 213 items dédiés avec dashboards de performance personnalisés. Alertes email routées via relais SMTP Mailpit dans la DMZ.
 
-➡️ [Documentation monitoring](configs/zabbix/zabbix-monitoring-documentation.md) · [Export templates](configs/zabbix/custom-templates.yaml)
+➡️ [Documentation monitoring](configs/zabbix/zabbix-monitoring-documentation.md) · [Export templates](configs/zabbix/zabbix_custom-templates.yaml)
 
 ### Contrôle d'accès — MFA partout
 
@@ -221,25 +221,25 @@ Audit de sécurité offensif réalisé depuis **Kali Linux** positionné dans le
 
 | Dashboard | Statut CARP (FW1 MASTER) | Statut CARP (FW2 BACKUP) |
 |---|---|---|
-| ![Dashboard](docs/assets/screenshots/opnsense-01-dashboard-fw1.png) | ![CARP FW1](docs/assets/screenshots/opnsense-02-carp-status-fw1.png) | ![CARP FW2](docs/assets/screenshots/opnsense-03-carp-status-fw2.png) |
+| ![Dashboard](docs/assets/screenshots/opnsense/dashboard-fw1.png) | ![CARP FW1](docs/assets/screenshots/CARP-fw1_status.png) | ![CARP FW2](docs/assets/screenshots/CARP-fw2_status.png) |
 
 **Wazuh — SIEM / XDR**
 
 | Vue globale (11 agents) | Threat Hunting (MITRE) | Active Response (XSS détecté) |
 |---|---|---|
-| ![Vue globale](docs/assets/screenshots/wazuh-01-dashboard-overview.png) | ![Threat Hunting](docs/assets/screenshots/wazuh-03-threat-hunting.png) | ![Active Response](docs/assets/screenshots/wazuh-06-active-response-xss.png) |
+| ![Vue globale](docs/assets/screenshots/wazuh/wazuh-01-dashboard-overview.png) | ![Threat Hunting](docs/assets/screenshots/wazuh/wazuh-03-threat-hunting.png) | ![Active Response](docs/assets/screenshots/wazuh/wazuh-06-active-response-xss.png) |
 
 **Zabbix — Supervision**
 
 | Dashboard (14 hôtes) | Performance Oracle | Alertes en cours |
 |---|---|---|
-| ![Dashboard](docs/assets/screenshots/zabbix-01-dashboard.png) | ![Oracle](docs/assets/screenshots/zabbix-03-oracle-cpu-memory.png) | ![Problèmes](docs/assets/screenshots/zabbix-04-alert-problems.png) |
+| ![Dashboard](docs/assets/screenshots/zabbix/zabbix-01-dashboard.png) | ![Oracle](docs/assets/screenshots/zabbix/zabbix-03-oracle-cpu-memory.png) | ![Problèmes](docs/assets/screenshots/zabbix/zabbix-04-alert-problems.png) |
 
 ---
 
 ## 🚀 Ce que ce projet m'a appris
 
-- **La défense en profondeur** n'est pas un buzzword — chaque couche (firewall → segmentation → MFA → SIEM → backup) détecte des menaces que les autres laissent passer
+- **La défense en profondeur** n'est pas un buzzword, chaque couche (firewall → segmentation → MFA → SIEM → backup) détecte des menaces que les autres laissent passer
 - **Des règles SIEM personnalisées** alignées sur des référentiels de conformité transforment un SIEM d'un agrégateur de logs en un véritable moteur de détection
 - **Pentester sa propre infrastructure** révèle des angles morts qu'une revue de configuration ne peut pas trouver
 - **La documentation est un contrôle de sécurité** — si ce n'est pas documenté, ça n'existe pas pour les auditeurs
@@ -248,7 +248,7 @@ Audit de sécurité offensif réalisé depuis **Kali Linux** positionné dans le
 
 ## 📄 Licence
 
-Ce projet est publié sous [licence MIT](LICENSE). Les fichiers de configuration sont anonymisés — aucun secret, credential ou donnée patient réelle n'est inclus dans ce dépôt.
+Ce projet est publié sous [licence MIT](LICENSE). Les fichiers de configuration sont anonymisés; aucun secret, credential ou donnée patient réelle n'est inclus dans ce dépôt.
 
 ---
 

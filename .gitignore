@@ -1,0 +1,26 @@
+﻿# Secrets & credentials
+*.key
+*.pem
+*.crt
+*.p12
+*.pfx
+*secret*
+*password*
+*token*
+.env
+
+# VMware files
+*.vmdk
+*.vmx
+*.vmxf
+*.nvram
+*.vmsd
+*.vmsn
+
+# OS
+.DS_Store
+Thumbs.db
+
+# Editor
+.vscode/
+.idea/

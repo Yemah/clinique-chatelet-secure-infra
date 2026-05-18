@@ -221,7 +221,7 @@ Audit de sécurité offensif réalisé depuis **Kali Linux** positionné dans le
 
 | Dashboard | Statut CARP (FW1 MASTER) | Statut CARP (FW2 BACKUP) |
 |---|---|---|
-| ![Dashboard](docs/assets/screenshots/opnsense/dashboard-fw1.png) | ![CARP FW1](docs/assets/screenshots/CARP-fw1_status.png) | ![CARP FW2](docs/assets/screenshots/CARP-fw2_status.png) |
+| ![Dashboard](docs/assets/screenshots/opnsense/dashboard-fw1.png) | ![CARP FW1](docs/assets/screenshots/opnsense/CARP-fw1_status.png) | ![CARP FW2](docs/assets/screenshots/opnsense/CARP-fw2_status.png) |
 
 **Wazuh — SIEM / XDR**
 

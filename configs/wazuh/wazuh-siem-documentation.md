@@ -133,7 +133,7 @@ Full log: GET /magento/magmi/web/ajax_pluginconf.php?file=../../etc/hosts
 
 ## Screenshot Guide
 
-| File | Content |
+| File (docs/assets/screenshots/wazuh/) | Content |
 |---|---|
 | `wazuh-01-dashboard-overview.png` | 11 agents active, severity breakdown |
 | `wazuh-02-agent-status.png` | All 11 agents with OS, groups, IPs |

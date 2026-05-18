@@ -60,6 +60,8 @@ When FW1 fails:
 3. pfSync ensures session continuity (no TCP reset for established connections)
 4. All VMs continue using the same gateway IPs (.254) — transparent failover
 
+![Demo Failover OPNsense](../../docs/assets/screenshots/opnsense/failover-demo.gif)
+
 ## Evidence
 
 - `CARP-fw1_status.png` — FW1 showing all 6 VHIDs as MASTER

@@ -1,0 +1,31 @@
+LSNRCTL for Linux: Version 21.0.0.0.0 - Production on 19-MAY-2026 23:24:31
+
+Copyright (c) 1991, 2021, Oracle.  All rights reserved.
+
+Connecting to (DESCRIPTION=(ADDRESS=(PROTOCOL=TCP)(HOST=0.0.0.0)(PORT=1521)))
+STATUS of the LISTENER
+------------------------
+Alias                     LISTENER
+Version                   TNSLSNR for Linux: Version 21.0.0.0.0 - Production
+Start Date                12-MAY-2026 17:27:40
+Uptime                    7 days 5 hr. 56 min. 50 sec
+Trace Level               off
+Security                  ON: Local OS Authentication
+SNMP                      OFF
+Default Service           XE
+Listener Parameter File   /opt/oracle/homes/OraDBHome21cXE/network/admin/listener.ora
+Listener Log File         /opt/oracle/diag/tnslsnr/srv-oracle-db-01/listener/alert/log.xml
+Listening Endpoints Summary...
+  (DESCRIPTION=(ADDRESS=(PROTOCOL=tcp)(HOST=0.0.0.0)(PORT=1521)))
+  (DESCRIPTION=(ADDRESS=(PROTOCOL=ipc)(KEY=EXTPROC1521)))
+  (DESCRIPTION=(ADDRESS=(PROTOCOL=tcps)(HOST=127.0.0.1)(PORT=5500))(Security=(my_wallet_directory=/opt/oracle/homes/OraDBHome21cXE/admin/XE/xdb_wallet))(Presentation=HTTP)(Session=RAW))
+Services Summary...
+Service "4babbb8c2307cb01e063140b10ac2ed2" has 1 instance(s).
+  Instance "XE", status READY, has 1 handler(s) for this service...
+Service "XE" has 1 instance(s).
+  Instance "XE", status READY, has 1 handler(s) for this service...
+Service "XEXDB" has 1 instance(s).
+  Instance "XE", status READY, has 1 handler(s) for this service...
+Service "xepdb1" has 1 instance(s).
+  Instance "XE", status READY, has 1 handler(s) for this service...
+The command completed successfully

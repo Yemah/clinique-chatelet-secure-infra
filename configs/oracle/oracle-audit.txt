@@ -1,0 +1,47 @@
+SQL*Plus: Release 21.0.0.0.0 - Production on Tue May 19 23:23:47 2026
+Version 21.3.0.0.0
+
+Copyright (c) 1982, 2021, Oracle.  All rights reserved.
+
+
+Connecte a :
+Oracle Database 21c Express Edition Release 21.0.0.0.0 - Production
+Version 21.3.0.0.0
+
+SQL> 
+INSTANCE_NAME	 STATUS       VERSION
+---------------- ------------ -----------------
+XE		 OPEN	      21.0.0.0.0
+
+SQL> 
+TABLESPACE_NAME 		  SIZE_MB
+------------------------------ ----------
+USERS					5
+UNDOTBS1			      120
+SYSTEM				     1360
+SYSAUX				     1020
+CLINIQUE_DATA			     1024
+
+SQL> 
+USERNAME
+--------------------------------------------------------------------------------
+ACCOUNT_STATUS			 CREATED
+-------------------------------- --------
+C##ZBX_MONITOR
+OPEN				 25/04/26
+
+
+SQL> 
+NAME
+--------------------------------------------------------------------------------
+VALUE
+--------------------------------------------------------------------------------
+remote_login_passwordfile
+EXCLUSIVE
+
+audit_trail
+DB
+
+
+SQL> Deconnecte de Oracle Database 21c Express Edition Release 21.0.0.0.0 - Production
+Version 21.3.0.0.0

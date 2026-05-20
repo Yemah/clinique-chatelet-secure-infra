@@ -331,6 +331,6 @@ docs/assets/
 
 ---
 
-**Construit avec 🔒 par Yemah** · *Master 2 — Infrastructure Réseaux et Sécurité*
+**Construit avec 🔒 par Steeve WOMO** · *Master 2 — Infrastructure Réseaux et Sécurité*
 
 [![LinkedIn](https://img.shields.io/badge/LinkedIn-Profil-0A66C2?style=for-the-badge&logo=linkedin)](https://linkedin.com/in/steeve-womo)

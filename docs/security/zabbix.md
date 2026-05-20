@@ -21,4 +21,4 @@
 | [`zabbix-monitoring-documentation.md`](https://github.com/Yemah/clinique-chatelet-secure-infra/blob/main/configs/zabbix/zabbix-monitoring-documentation.md) | Documentation complète |
 | [`custom-templates.yaml`](https://github.com/Yemah/clinique-chatelet-secure-infra/blob/main/configs/zabbix/custom-templates.yaml) | Templates FreeBSD exportés |
 
-![Zabbix Dashboard](../assets/screenshots/zabbix-01-dashboard.png)
+![Zabbix Dashboard](../assets/screenshots/zabbix/zabbix-01-dashboard.png)

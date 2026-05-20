@@ -291,7 +291,7 @@ Audit offensif depuis **Kali Linux** en VLAN GUEST (555) — zéro connaissance 
 
 | Jobs Oracle (Success) | Inventaire 15 VMs | Repository 300 Go |
 |---|---|---|
-| ![](docs/assets/screenshots/veeam/veeam-01-jobs-oracle-success.png) | ![](docs/assets/screenshots/veeam/veeam-02-inventory-15vms.png) | ![](docs/assets/screenshots/veeam/veeam-03-repository.png) |
+| ![](docs/assets/screenshots/veeam-backup/veeam-01-jobs-oracle-success.png) | ![](docs/assets/screenshots/veeam-backup/veeam-02-inventory-15vms.png) | ![](docs/assets/screenshots/veeam-backup/veeam-03-repository.png) |
 
 ---
 

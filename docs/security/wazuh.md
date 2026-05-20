@@ -50,4 +50,4 @@
 | [`agent-conf-default.xml`](https://github.com/Yemah/clinique-chatelet-secure-infra/blob/main/configs/wazuh/agent-conf-default.xml) | Config agents partagée |
 | [`wazuh-siem-documentation.md`](https://github.com/Yemah/clinique-chatelet-secure-infra/blob/main/configs/wazuh/wazuh-siem-documentation.md) | Documentation complète |
 
-![Wazuh Dashboard](../assets/screenshots/wazuh-01-dashboard-overview.png)
+![Wazuh Dashboard](../assets/screenshots/wazuh/wazuh-01-dashboard-overview.png)

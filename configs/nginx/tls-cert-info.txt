@@ -1,0 +1,30 @@
+Certificate:
+    Data:
+        Version: 3 (0x2)
+        Serial Number:
+            11:36:1c:82:25:53:a8:54:d8:46:54:ee:e9:99:26:29:13:b3:43:5a
+        Signature Algorithm: sha256WithRSAEncryption
+        Issuer: C = FR, ST = Ile-de-France, L = Paris, O = Clinique Le Chatelet, CN = portal.clinique-chatelet.local
+        Validity
+            Not Before: Feb 27 13:46:30 2026 GMT
+            Not After : Feb 27 13:46:30 2027 GMT
+        Subject: C = FR, ST = Ile-de-France, L = Paris, O = Clinique Le Chatelet, CN = portal.clinique-chatelet.local
+        Subject Public Key Info:
+            Public Key Algorithm: rsaEncryption
+                Public-Key: (2048 bit)
+                Modulus:
+                    00:c2:f8:61:87:2b:6a:be:9a:11:08:85:70:19:c1:
+                    f9:5a:ee:b3:8c:4d:5a:ed:ad:6b:c9:a0:7a:06:e9:
+                    34:90:d0:5d:80:f7:c5:c2:13:4d:5a:8b:75:37:0f:
+                    79:7f:3d:fa:3e:6a:e0:25:8b:8c:87:0d:c4:08:75:
+                    74:2b:62:3d:12:d8:f9:c1:2e:f3:d8:22:a5:1f:59:
+                    98:70:6c:c0:56:50:cc:e5:df:d6:19:ad:5e:f5:3f:
+                    94:6a:55:b7:9e:25:e7:e0:29:88:b6:fe:86:0e:14:
+                    c1:87:98:32:c6:c2:1b:98:30:bd:ba:36:32:c3:44:
+                    d7:89:10:bf:0a:7e:35:3d:d8:f8:31:8b:be:d5:cb:
+                    23:68:e0:36:6d:92:fa:71:21:78:82:53:18:4d:d3:
+                    48:c6:f3:03:34:53:99:20:08:88:98:37:99:71:02:
+                    2e:31:ed:ef:02:5b:2b:93:ac:5c:55:16:f6:5d:39:
+                    45:87:0d:5f:b0:dd:02:59:08:4d:7e:9e:74:4b:91:
+                    d0:cf:56:f9:2c:b3:ac:f6:75:c7:9a:d4:96:29:16:
+                    1b:3b:89:c0:d0:a0:73:60:64:58:c4:db:2c:dd:52:

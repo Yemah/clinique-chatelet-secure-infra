@@ -36,4 +36,4 @@ VLAN 444 sanctuarisé. Repository 300 Go. 3 jobs planifiés. 15 VMs inventoriée
 
 ➡️ [`veeam-pra-documentation.md`](https://github.com/Yemah/clinique-chatelet-secure-infra/blob/main/configs/veeam/veeam-pra-documentation.md)
 
-![Veeam Jobs](../assets/screenshots/veeam-01-jobs-oracle-success.png)
+![Veeam Jobs](../assets/screenshots/veeam-backup/veeam-01-jobs-oracle-success.png)

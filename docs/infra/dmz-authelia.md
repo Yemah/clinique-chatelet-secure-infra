@@ -36,4 +36,4 @@ Navigateur → Nginx (443) → Authelia (TOTP) → SRV-WEB (8080) → Oracle (15
 | [`authelia-location.conf`](https://github.com/Yemah/clinique-chatelet-secure-infra/blob/main/configs/nginx/authelia-location.conf) | Snippet forward-auth |
 | [`configuration.yml`](https://github.com/Yemah/clinique-chatelet-secure-infra/blob/main/configs/authelia/configuration.yml) | Config Authelia |
 
-![Authelia TOTP](../assets/screenshots/dmz-02-authelia-totp.png)
+![Authelia TOTP](../assets/screenshots/authelia/dmz-02-authelia-totp.png)

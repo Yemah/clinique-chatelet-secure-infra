@@ -40,4 +40,4 @@ Cluster actif/passif avec CARP (6 VHIDs) + pfSync sur lien dédié (10.0.0.0/30)
 | [`fw1-interfaces.conf`](https://github.com/Yemah/clinique-chatelet-secure-infra/blob/main/configs/opnsense/fw1-interfaces.conf) | Interfaces + VIPs |
 | [`fw1-nat-rules.conf`](https://github.com/Yemah/clinique-chatelet-secure-infra/blob/main/configs/opnsense/fw1-nat-rules.conf) | Règles NAT outbound |
 
-![Dashboard FW1](screenshots/opnsense/dashboard-fw1.png)
+![Dashboard FW1](../screenshots/opnsense/dashboard-fw1.png)

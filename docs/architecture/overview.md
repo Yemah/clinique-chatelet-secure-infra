@@ -1,19 +1,13 @@
-# 🏗️ Architecture Globale
+># 🏗️ Architecture Globale
 
 L'infrastructure est déployée sur **VMware ESXi 7.0 U2** avec une architecture **hybride Router-on-a-Stick + Access Ports**.
 
-```
-                    ┌───────────────────────┐
-                    │   Cluster HA OPNsense  │
-                    │   FW1 ◄──pfSync──► FW2 │
-                    │   6 VIPs CARP (.254)   │
-                    └───────────┬───────────┘
-                        Trunk 802.1Q (VGT 4095)
-                                │
-     ┌─────────┬────────────┬───┴───┬────────────┬──────────┐
-  VLAN 111  VLAN 222    VLAN 333  VLAN 444   VLAN 555   VLAN 999
-    SRV      CLIENT       DMZ     BACKUP      GUEST      MGMT
-```
+---
+<p align="center">
+  <a href="https://github.com/Yemah/clinique-chatelet-secure-infra"><img src="https://github.com/Yemah/clinique-chatelet-secure-infra/main/docs/assets/diagrams/clinique-chatelet-architecture.png" width="800" alt="Schéma d'architecture"></a>
+</p>
+
+
 
 ## Plan d'Adressage
 

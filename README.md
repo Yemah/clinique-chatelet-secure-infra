@@ -267,7 +267,7 @@ Audit offensif depuis **Kali Linux** en VLAN GUEST (555) — zéro connaissance 
 
 | Dashboard FW1 | CARP FW1 (MASTER) | CARP FW2 (BACKUP) |
 |---|---|---|
-| ![](docs/assets/screenshots/opnsense/opnsense-01-dashboard-fw1.png) | ![](docs/assets/screenshots/opnsense/opnsense-02-carp-status-fw1.png) | ![](docs/assets/screenshots/opnsense/opnsense-03-carp-status-fw2.png) |
+| ![](docs/assets/screenshots/opnsense/dashboard-fw1.png) | ![](docs/assets/screenshots/opnsense/CARP-fw1_status.png) | ![](docs/assets/screenshots/opnsense/CARP-fw2_status.png) |
 
 **SIEM Wazuh**
 
@@ -291,7 +291,7 @@ Audit offensif depuis **Kali Linux** en VLAN GUEST (555) — zéro connaissance 
 
 | Jobs Oracle (Success) | Inventaire 15 VMs | Repository 300 Go |
 |---|---|---|
-| ![](docs/assets/screenshots/veeam/veeam-01-jobs-oracle-success.png) | ![](docs/assets/screenshots/veeam/veeam-02-inventory-15vms.png) | ![](docs/assets/screenshots/veeam/veeam-03-repository.png) |
+| ![](docs/assets/screenshots/veeam-backup/veeam-01-jobs-oracle-success.png) | ![](docs/assets/screenshots/veeam-backup/veeam-02-inventory-15vms.png) | ![](docs/assets/screenshots/veeam-backup/veeam-03-repository.png) |
 
 ---
 

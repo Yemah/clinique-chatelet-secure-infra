@@ -1,33 +1,31 @@
 # 🏥 Clinique Le Châtelet — Infrastructure Sécurisée de Soins
 
-**Infrastructure réseau segmentée et sécurisée pour la protection de données de santé (HDS/HIPAA)**
-**Déployée sur VMware ESXi avec pare-feux HA, SIEM, MFA et réponse automatisée aux menaces**
+**Infrastructure réseau de niveau production pour la protection de données de santé (HDS/HIPAA) — 13 VMs, 6 VLANs, cluster HA, SIEM, MFA, PRA**
 
 ![OPNsense](https://img.shields.io/badge/Firewall-OPNsense_26.1.3-D94F00?style=for-the-badge&logo=opnsense&logoColor=white)
 ![Wazuh](https://img.shields.io/badge/SIEM-Wazuh_4.14.4-3CBCB4?style=for-the-badge&logo=wazuh&logoColor=white)
 ![Zabbix](https://img.shields.io/badge/Monitoring-Zabbix_7.4.9-D40000?style=for-the-badge&logo=zabbix&logoColor=white)
 ![VMware](https://img.shields.io/badge/Hyperviseur-ESXi_7.0_U2-607078?style=for-the-badge&logo=vmware&logoColor=white)
 ![Windows Server](https://img.shields.io/badge/AD-Windows_Server_2022-0078D4?style=for-the-badge&logo=windows&logoColor=white)
-![Oracle](https://img.shields.io/badge/Base_de_données-Oracle_21c-F80000?style=for-the-badge&logo=oracle&logoColor=white)
+![Oracle](https://img.shields.io/badge/BDD-Oracle_21c-F80000?style=for-the-badge&logo=oracle&logoColor=white)
 
-![HDS](https://img.shields.io/badge/Conformité-HDS_(Données_de_Santé)-00A86B?style=flat-square)
+![HDS](https://img.shields.io/badge/Conformité-HDS-00A86B?style=flat-square)
 ![ISO 27001](https://img.shields.io/badge/Conformité-ISO_27001-0066CC?style=flat-square)
 ![RGPD](https://img.shields.io/badge/Conformité-RGPD_Art.32-6C3483?style=flat-square)
 ![PCI DSS](https://img.shields.io/badge/Conformité-PCI_DSS-1A1A2E?style=flat-square)
+![HIPAA](https://img.shields.io/badge/Conformité-HIPAA-2196F3?style=flat-square)
+
+*Projet de Master — Infrastructure Réseaux et Sécurité · Conçu, déployé et pentesté from scratch sur ESXi physique*
 
 ---
 
-*Projet de Master en Infrastructure Réseaux et Sécurité — Conçu, déployé et pentesté from scratch sur un hôte ESXi physique.*
+## 🎯 Contexte
 
----
+Une clinique de rééducation devait exposer son **application médicale Oracle** sur le Web pour l'accès distant des soignants, en respectant les exigences **HDS** et en garantissant **99,99% de disponibilité**.
 
-## 🎯 Le Défi
+**Avant** : Aucun pare-feu, aucune segmentation, postes avec droits admin, DNS vers la box, Oracle exposé sur le LAN.
 
-Une clinique de rééducation fonctionnelle devait exposer son **application médicale Oracle monolithique** sur le Web, permettant aux soignants d'accéder à distance aux dossiers patients via un portail sécurisé tout en respectant les exigences **HDS** (Hébergement de Données de Santé) et en garantissant une **disponibilité de 99.99%**.
-
-**Le problème :** Aucun pare-feu. Aucune segmentation. Aucune authentification. Des postes avec droits admin locaux. Le DNS pointant vers la box Internet. Une base Oracle directement accessible sur le LAN.
-
-**La solution :** Une refonte complète de l'infrastructure avec défense en profondeur, micro-segmentation, basculement HA, MFA, SIEM avec règles de détection personnalisées, et confinement automatisé des menaces.
+**Après** : Défense en profondeur sur 6 couches — segmentation VLAN, cluster HA CARP, MFA TOTP obligatoire, SIEM avec 35 règles custom, Active Response automatisé, PRA avec backup CBT, et pentest validant le tout.
 
 ---
 
@@ -38,161 +36,209 @@ Une clinique de rééducation fonctionnelle devait exposer son **application mé
                          │   INTERNET   │
                          └──────┬───────┘
                                 │
-                         ┌──────┴───────┐
-                         │  Sophos UTM  │
-                         │  WAN VLAN 65 │
-                         └──────┬───────┘
-                                │
-                ┌───────────────┴───────────────┐
-                │    Cluster HA OPNsense         │
-                │  ┌─────────┐   ┌─────────┐    │
-                │  │  FW1    │◄─►│  FW2    │    │
-                │  │ MASTER  │pf │ BACKUP  │    │
-                │  │  Sync   │   │         │    │
-                │  └─────────┘   └─────────┘    │
-                │     6 VIPs CARP (.254)         │
-                └───────────────┬───────────────┘
-                                │
+                    ┌───────────┴───────────┐
+                    │   Cluster HA OPNsense  │
+                    │   FW1 ◄──pfSync──► FW2 │
+                    │   6 VIPs CARP (.254)   │
+                    └───────────┬───────────┘
                         Trunk 802.1Q (VGT 4095)
                                 │
-          ┌─────────┬───────────┼───────────┬──────────┐
-          │         │           │           │          │
-    ┌─────┴─────┐ ┌─┴───────┐ ┌┴────────┐ ┌┴───────┐ ┌┴────────┐
-    │ VLAN 111  │ │VLAN 333 │ │VLAN 444 │ │VLAN 555│ │VLAN 999 │
-    │   SRV     │ │  DMZ    │ │ BACKUP  │ │ GUEST  │ │  MGMT   │
-    │───────────│ │─────────│ │─────────│ │────────│ │─────────│
-    │ DC1 + DC2 │ │ Nginx   │ │ Veeam   │ │Isolé   │ │ Bastion │
-    │ Oracle 21c│ │Authelia │ │ B&R 13  │ │Internet│ │Admin IT │
-    │ Zabbix    │ │Appli Web│ │         │ │  seul  │ │BitLocker│
-    │ Wazuh     │ │Mailpit  │ │         │ │        │ │ 9 GPOs  │
-    │ GLPI      │ │         │ │         │ │        │ │         │
-    └───────────┘ └─────────┘ └─────────┘ └────────┘ └─────────┘
-     172.16.11.0   172.16.33.0 172.16.44.0 172.16.55.0 172.16.99.0
+     ┌─────────┬────────────┬───┴───┬────────────┬──────────┐
+     │         │            │       │            │          │
+┌────┴─────┐┌──┴─────┐┌────┴───┐┌──┴───────┐┌───┴────┐┌───┴─────┐
+│ VLAN 111 ││VLAN 222││VLAN 333││ VLAN 444 ││VLAN 555││VLAN 999 │
+│   SRV    ││ CLIENT ││  DMZ   ││  BACKUP  ││ GUEST  ││  MGMT   │
+│──────────││────────││────────││──────────││────────││─────────│
+│DC1+DC2   ││Postes  ││Nginx   ││Veeam B&R ││Internet││Bastion  │
+│Oracle 21c││travail ││+MFA    ││300Go repo││  seul  ││BitLocker│
+│Zabbix    ││soignant││Portail ││15 VMs    ││        ││9 GPOs   │
+│Wazuh     ││        ││Mailpit ││protégées ││        ││         │
+│GLPI      ││        ││        ││          ││        ││         │
+└──────────┘└────────┘└────────┘└──────────┘└────────┘└─────────┘
+172.16.11.0 172.16.22.0 172.16.33.0 172.16.44.0 172.16.55.0 172.16.99.0
 ```
 
-> **Architecture hybride Router-on-a-Stick + Access Ports** sur VMware ESXi 7.0 U2 — Les firewalls gèrent le tagging 802.1Q via VLAN 4095 (VGT), tandis que toutes les autres VMs sont connectées à des groupes de ports access dédiés.
+➡️ [Matrice de flux inter-VLAN complète](docs/assets/diagrams/flux-matrix.md)
 
 ---
 
-## 📊 Métriques Clés
+## 📊 Chiffres Clés
 
-| Composant | Métrique | Valeur |
-|---|---|---|
-| **OPNsense** | Règles firewall (pfctl) | **208 règles** en 19 sections |
-| | Alias (object-groups) | **35 alias** (hôtes, réseaux, ports) |
-| | VIPs CARP | **6 VHIDs** — basculement transparent |
-| | États actifs | 1 166 connexions simultanées |
-| **Wazuh** | Règles de détection HDS custom | **35 règles** (200000→200501) |
-| | Agents actifs | **12 endpoints** (4 familles d'OS) |
-| | Alertes collectées | **92 488** |
-| | Active Responses automatisées | **8 règles de confinement** |
-| **Zabbix** | Hôtes supervisés | **14** (dual-stack sur les firewalls) |
-| | Items actifs | **20 088** |
-| | Triggers actifs | **7 728** |
-| | Débit | **19,67 valeurs/seconde** |
-| **Infrastructure** | Machines virtuelles ESXi | **13 VMs** |
-| | Segments VLAN | **6 zones isolées** |
-| | Utilisateurs protégés MFA | **6 comptes** (TOTP) |
-| | Ratio compression backup | **5,5x** (80 Go en 36 min) |
+| | Valeur | | Valeur |
+|---|---|---|---|
+| Règles firewall pfctl | **208** | VMs sur ESXi | **15** |
+| Alias (object-groups) | **35** | VLANs isolés | **6** |
+| Règles SIEM custom HDS | **35** | Agents Wazuh | **12** |
+| Items Zabbix actifs | **20 088** | Triggers Zabbix | **7 728** |
+| Alertes collectées | **92 488** | GPOs de sécurité | **10** |
+| Active Responses auto | **8** | Comptes MFA (TOTP) | **6** |
+| Backup Oracle (CBT) | **80 Go / 16 min** | Repository backup | **300 Go** |
 
 ---
 
-## 🛡️ Stack Sécurité
+## 🛡️ Sécurité Réseau — Pare-feu HA
 
-### Pare-feu — Cluster HA OPNsense
+Cluster actif/passif **OPNsense 26.1.3** avec CARP (6 VHIDs) + pfSync sur lien dédié. Politique **Default Deny** sur chaque interface, anti-spoofing sur 11 interfaces, anti-bogons RFC1918/6598 sur le WAN, tables dynamiques `sshlockout` et `virusprot`.
 
-Deux OPNsense 26.1.3 en cluster actif/passif CARP avec synchronisation d'état pfSync sur un lien dédié. Politique Default Deny sur toutes les interfaces avec anti-spoofing, anti-bogons (RFC1918 + RFC6598) et tables dynamiques de blocage (`sshlockout`, `virusprot`).
+| Documentation | Lien |
+|---|---|
+| Règles pfctl annotées (208 règles, 19 sections) | [fw1-rules-annotated.conf](configs/opnsense/fw1-rules-annotated.conf) |
+| Matrice de flux inter-VLAN | [flux-matrix.md](docs/assets/diagrams/flux-matrix.md) |
+| Inventaire des 35 alias | [aliases-inventory.md](configs/opnsense/aliases-inventory.md) |
+| Configuration HA CARP + pfSync | [carp-ha-config.md](configs/opnsense/carp-ha-config.md) |
+| Interfaces et VIPs | [fw1-interfaces.conf](configs/opnsense/fw1-interfaces.conf) |
+| Règles NAT outbound | [fw1-nat-rules.conf](configs/opnsense/fw1-nat-rules.conf) |
 
-➡️ [Règles pfctl annotées](configs/opnsense/fw1-rules-annotated.conf) · [Matrice de flux complète](docs/assets/diagrams/flux-matrix.md) · [Inventaire des alias](configs/opnsense/aliases-inventory.md) · [Documentation HA CARP](configs/opnsense/carp-ha-config.md)
+---
 
-### SIEM — Wazuh XDR avec règles HDS personnalisées
+## 🔍 SIEM & Détection — Wazuh XDR
 
-35 règles de détection personnalisées organisées en 11 catégories, mappées sur les frameworks **PCI DSS**, **HIPAA** et **MITRE ATT&CK**. Active Response bloque les menaces en temps réel via `firewall-drop` (Linux), `pf` (FreeBSD/OPNsense) et `netsh` (Windows).
+**35 règles de détection personnalisées** mappées sur PCI DSS, HIPAA et MITRE ATT&CK. **8 Active Responses** bloquent les menaces en temps réel via `firewall-drop` (Linux), `pf` (FreeBSD/OPNsense) et `netsh` (Windows).
 
-| Catégorie | Règles | Exemples |
+| Catégorie | Règles | Détections |
 |---|---|---|
-| Authentification | 200000–200007 | Brute force SSH/AD, connexion root, accès hors heures |
-| Élévation de privilèges | 200050–200054 | sudo, modification groupes AD, cycle de vie des comptes |
-| Anti-forensics | 200100–200101 | Effacement logs Windows (T1070.001), Pass-the-Hash (T1550.002) |
-| Intégrité fichiers (FIM) | 200150–200160 | Falsification configs, **détection extensions ransomware** |
-| Réseau / Firewall | 200200–200212 | Détection scan, intrusion VLAN BACKUP, brute force VPN |
-| Backup Veeam | 200350–200352 | Échecs backup, backup Oracle critique |
-| Base Oracle | 200400–200402 | Erreurs ORA-, ORA-00600 interne, échecs connexion |
-| Disponibilité | 200500–200501 | Service arrêté, reboot/shutdown système |
+| Authentification | 200000–200007 | Brute force SSH/AD, root login, accès hors heures, brute force Authelia |
+| Élévation de privilèges | 200050–200054 | sudo, modification groupes AD, cycle de vie comptes |
+| Anti-forensics | 200100–200101 | Effacement logs (T1070.001), Pass-the-Hash (T1550.002) |
+| Intégrité fichiers | 200150–200160 | Tampering configs, **détection extensions ransomware** |
+| Réseau | 200200–200212 | Scan réseau, intrusion VLAN BACKUP, brute force VPN |
+| Backup / Oracle / Dispo | 200350–200501 | Échecs backup, ORA-00600, service arrêté, reboot |
 
-➡️ [Règles custom XML](configs/wazuh/local_rules.xml) · [Documentation SIEM](configs/wazuh/wazuh-siem-documentation.md) · [Config manager](configs/wazuh/ossec.conf)
+| Documentation | Lien |
+|---|---|
+| Règles custom XML (35 règles) | [local_rules.xml](configs/wazuh/local_rules.xml) |
+| Documentation SIEM complète | [wazuh-siem-documentation.md](configs/wazuh/wazuh-siem-documentation.md) |
+| Configuration manager (ossec.conf) | [ossec.conf](configs/wazuh/ossec.conf) |
+| Configuration agents partagée | [agent-conf-default.xml](configs/wazuh/agent-conf-default.xml) |
 
-### Supervision — Zabbix 7.4.9
+---
 
-14 hôtes supervisés sur tous les VLANs avec observation dual-stack sur les firewalls (agent Zabbix + SNMP). La base Oracle dispose de 213 items dédiés avec dashboards de performance personnalisés. Alertes email routées via relais SMTP Mailpit dans la DMZ.
+## 📈 Supervision — Zabbix 7.4.9
 
-➡️ [Documentation monitoring](configs/zabbix/zabbix-monitoring-documentation.md) · [Export templates](configs/zabbix/zabbix_custom-templates.yaml)
+**14 hôtes** supervisés sur tous les VLANs avec observation **dual-stack** sur les firewalls (agent Zabbix + SNMP). Oracle DB instrumenté avec **213 items** et dashboards de performance dédiés. **19,67 valeurs/seconde** de débit. Alertes email via Mailpit (465+ notifications).
 
-### Contrôle d'accès — MFA partout
+| Documentation | Lien |
+|---|---|
+| Documentation monitoring (14 hôtes) | [zabbix-monitoring-documentation.md](configs/zabbix/zabbix-monitoring-documentation.md) |
+| Templates exportés (Zabbix 7.4) | [custom-templates.yaml](configs/zabbix/custom-templates.yaml) |
 
-| Chemin d'accès | Authentification | Technologie |
+---
+
+## 🏢 Active Directory — Infrastructure Tier 0
+
+Domaine `clinique-chatelet.local` en mode **Windows2016Domain** avec 2 contrôleurs (DC1 + DC2), réplication **0 erreur**, 5 rôles FSMO sur DC1, **LDAPS actif** (port 636). **17 OUs** structurées par rôle métier, **4 comptes de service** dédiés (svc_backup, svc_monitoring, svc_glpi, svc_authelia), et **10 GPOs de sécurité**.
+
+| GPO | Fonction |
+|---|---|
+| GPO-Security-Password-Policy | Min 12 caractères, complexité, historique 24 |
+| GPO-Security-Account-Lockout | 5 tentatives → verrouillage 30 min |
+| GPO-Security-Audit-Policy | 10 catégories d'audit (Succès + Échec) |
+| GPO-Security-Disable-SMBv1 | Protection WannaCry/NotPetya |
+| GPO-Security-Windows-Firewall | Pare-feu Windows sur tous les profils |
+| GPO-BitLocker-NoTPM | Chiffrement disque sans TPM, récupération AD DS |
+| GPO-Workstations-Hardening | Durcissement global postes de travail |
+
+```
+DC=clinique-chatelet,DC=local
+├── OU=CLINIQUE_USERS
+│   ├── OU=Medecins
+│   ├── OU=IT
+│   ├── OU=Soignants (IDE, Aides-Soignants)
+│   └── OU=Administratifs (Secretariat, Direction)
+├── OU=CLINIQUE_COMPUTERS (Servers, Workstations)
+├── OU=CLINIQUE_GROUPS (Security_Groups, Distribution_Groups)
+└── OU=CLINIQUE_SERVICE_ACCOUNTS
+```
+
+| Documentation | Lien |
+|---|---|
+| Documentation AD complète | [ad-infrastructure-documentation.md](configs/gpo/ad-infrastructure-documentation.md) |
+| Liste des GPOs | [gpo-list.txt](configs/gpo/gpo-list.txt) |
+| Structure des OUs | [ou-structure.txt](configs/gpo/ou-structure.txt) |
+| Rôles FSMO | [fsmo-roles.txt](configs/gpo/fsmo-roles.txt) |
+| Scopes DHCP (6 VLANs) | [dhcp-scopes.txt](configs/gpo/dhcp-scopes.txt) |
+| Zones DNS | [dns-zones.txt](configs/gpo/dns-zones.txt) |
+| Réplication (0 erreur) | [replication-summary.txt](configs/gpo/replication-summary.txt) |
+
+---
+
+## 🌐 Architecture Applicative — Portail Médical HDS
+
+Chaîne complète de bout en bout : **Navigateur → HTTPS → Nginx → Authelia (LDAPS + TOTP) → Node.js → Oracle 21c**
+
+```
+Soignant ──► Nginx (443/SSL) ──► Authelia (TOTP) ──► SRV-WEB (8080) ──► Oracle (1521)
+                                      │                                       │
+                                      ▼                                       ▼
+                                 DC1 LDAPS:636                        CLINIQUE_DATA
+                                 (svc_authelia)                       (1 Go, patients)
+```
+
+**Authelia v4.39.15** : Policy `deny` par défaut, `two_factor` obligatoire sur le portail. Backend LDAPS vers AD avec TLS 1.2 minimum. Sessions SQLite, cookies 8h, inactivité 1h.
+
+**Oracle 21c XE** : Instance XE, tablespace dédié `CLINIQUE_DATA` (1 Go), `audit_trail=DB`, 2 comptes ouverts seulement (CLINIQUE_APP + C##ZBX_MONITOR), 16 comptes Oracle par défaut verrouillés.
+
+**Nginx** : Reverse proxy SSL/HTTP2 avec forward-auth Authelia. Headers `Remote-User`, `Remote-Groups`, `Remote-Name` transmis au backend. Redirect HTTP→HTTPS. Certificat auto-signé RSA 2048.
+
+| Documentation | Lien |
+|---|---|
+| Documentation DMZ complète | [dmz-documentation.md](configs/nginx/dmz-documentation.md) |
+| Vhost Nginx portail | [portal-clinique-chatelet.conf](configs/nginx/portal-clinique-chatelet.conf) |
+| Snippet forward-auth | [authelia-location.conf](configs/nginx/authelia-location.conf) |
+| Configuration Authelia | [configuration.yml](configs/authelia/configuration.yml) |
+| Certificat TLS | [tls-cert-info.txt](configs/nginx/tls-cert-info.txt) |
+| Documentation Oracle | [oracle-application-documentation.md](configs/oracle/oracle-application-documentation.md) |
+| Audit Oracle (instance, tablespaces) | [oracle-audit.txt](configs/oracle/oracle-audit.txt) |
+| Listener Oracle | [oracle-listener.txt](configs/oracle/oracle-listener.txt) |
+
+---
+
+## 💾 Sauvegarde & PRA — Veeam B&R 13
+
+VLAN 444 sanctuarisé. Repository dédié **300 Go** (`E:\VeeamBackup`). **3 jobs planifiés** dont JOB-BACKUP-ORACLE-HDS (80 Go, CBT, 16 min, Success). **15 VMs inventoriées**, toutes "Clean" au scan malware Veeam. Détection Wazuh rule 200202 sur toute tentative d'accès non autorisé au VLAN BACKUP.
+
+| Métrique PRA | Objectif | Réalisé |
 |---|---|---|
-| Portail web (dossiers patients) | Identifiant + TOTP | Authelia v4.39.15 via Nginx forward-auth |
-| VPN (soignants distants) | LDAP + TOTP | OpenVPN + OPNsense OTP seeds |
-| Console admin (OPNsense) | Local + TOTP | MFA intégré OPNsense |
-| Connexion domaine | Kerberos + GPO | Active Directory (Windows Server 2022) |
+| RPO (perte de données max) | < 24h | ✅ Backup quotidien Oracle |
+| RTO (temps de reprise) | < 4h | ✅ Restauration VM ~20 min |
+| Compression | > 3x | ✅ 3,5x mesuré |
 
-### Sauvegarde et Reprise — Veeam B&R 13
+| Scénario de panne | Reprise |
+|---|---|
+| Perte Oracle DB | Restauration VM depuis JOB-BACKUP-ORACLE-HDS (~20 min) |
+| Perte DC1 (FSMO) | DC2 prend le relais + seizure FSMO (~30 min) |
+| Perte pare-feu FW1 | CARP automatique → FW2 promu MASTER (~3 sec) |
+| Ransomware | Isolation VLAN + restauration VMs clean + scan malware Veeam |
 
-VLAN 444 sanctuarisé avec accès restreint. Backup complet Oracle : **80 Go compressés à 14,5 Go** (ratio 5,5x) en 36 minutes avec VMware CBT (Changed Block Tracking).
+➡️ [Documentation Veeam/PRA complète](configs/veeam/veeam-pra-documentation.md)
 
 ---
 
 ## 🔬 Résultats du Pentest
 
-Audit de sécurité offensif réalisé depuis **Kali Linux** positionné dans le VLAN GUEST (555) — zéro connaissance préalable du SI.
+Audit offensif depuis **Kali Linux** en VLAN GUEST (555) — zéro connaissance du SI.
 
-| Test | Résultat | Preuve |
-|---|---|---|
-| Accessibilité VLANs internes depuis GUEST | ❌ **0 hôte visible** | Tout le RFC1918 bloqué au firewall |
-| Scan de ports gateway (65 535 ports) | ❌ **Tous filtrés** | Aucun service exposé sur la gateway |
-| DNS vers DCs internes depuis GUEST | ❌ **Bloqué** | Isolation DNS complète |
-| VLAN hopping (double-tag 802.1Q) | ❌ **Bloqué** | Trunk uniquement sur interfaces firewall |
-| DNS tunneling (exfiltration Base64) | ❌ **Timeout** | Pas de forwarding DNS depuis GUEST |
-| Détection proxy ouvert (3128, 8080) | ❌ **Timeout** | Aucun proxy ouvert |
-| XSS/Path traversal sur portail DMZ | 🔔 **Détecté par Wazuh** | Rule 31153 + Active Response déclenché |
-| Scan réseau (Kali → interne) | 🔔 **Détecté et Bloqué** | Rule 200200 → firewall-drop |
+| Test | Résultat |
+|---|---|
+| Accès VLANs internes depuis GUEST | ❌ 0 hôte visible |
+| Scan 65 535 ports sur la gateway | ❌ Tous filtrés |
+| DNS vers DCs internes | ❌ Bloqué |
+| VLAN hopping 802.1Q double-tag | ❌ Bloqué |
+| DNS tunneling Base64 | ❌ Timeout |
+| XSS / Path traversal sur DMZ | 🔔 **Détecté par Wazuh** (rule 31153 + Active Response) |
+| Scan réseau Kali → interne | 🔔 **Détecté et Bloqué** (rule 200200 → firewall-drop) |
 
 ---
 
 ## 📋 Conformité
 
-| Référentiel | Périmètre | Contrôles implémentés |
-|---|---|---|
-| **HDS** (FR) | Hébergement données de santé | Segmentation réseau, chiffrement, contrôle d'accès, journalisation, backup |
-| **ISO 27001** | Sécurité de l'information | Analyse de risques, contrôles SMSI, réponse à incident, continuité |
-| **RGPD Art. 32** | Protection des données | Pseudonymisation, chiffrement, disponibilité, résilience, tests réguliers |
-| **PCI DSS** | Cartes de paiement (méthodologie) | Config firewall, deny par défaut, surveillance logs, gestion vulnérabilités |
-| **HIPAA** | Données de santé (US, méthodologie) | Contrôle d'accès, audit, intégrité, sécurité des transmissions |
-
----
-
-## 🗂️ Structure du Dépôt
-
-```
-├── configs/
-│   ├── opnsense/          # Règles firewall, alias, HA CARP, NAT (anonymisées)
-│   ├── wazuh/             # Règles SIEM, config manager, config agents
-│   ├── zabbix/            # Templates monitoring, documentation
-│   ├── nginx/             # Reverse proxy + Authelia forward-auth (à venir)
-│   ├── authelia/          # Configuration MFA (à venir)
-│   └── gpo/               # Inventaire GPO Active Directory (à venir)
-│
-├── docs/
-│   ├── assets/
-│   │   ├── screenshots/   # Preuves anonymisées du lab
-│   │   └── diagrams/      # Matrice de flux, schémas d'architecture
-│   └── ...                # DATs par mission (à venir)
-│
-├── scripts/               # Scripts d'automatisation et d'audit (à venir)
-├── compliance/            # Matrices de conformité ISO/HDS/RGPD (à venir)
-└── mkdocs.yml             # Config du site de documentation (GitHub Pages)
-```
+| Référentiel | Contrôles implémentés |
+|---|---|
+| **HDS** | Segmentation 6 VLANs, LDAPS, MFA TOTP, audit DB Oracle, backup sanctuarisé, PRA |
+| **ISO 27001** | SMSI, analyse risques, politique Default Deny, journalisation centralisée, réponse incident |
+| **RGPD Art. 32** | Chiffrement (BitLocker, TLS, LDAPS), pseudonymisation, tests de résilience (pentest) |
+| **PCI DSS** | Firewall segmenté, deny par défaut, surveillance logs (Wazuh+Zabbix), gestion vulnérabilités |
+| **HIPAA** | Contrôle d'accès MFA, audit trails (Oracle+AD+Wazuh), intégrité FIM, backup chiffré |
 
 ---
 
@@ -200,60 +246,91 @@ Audit de sécurité offensif réalisé depuis **Kali Linux** positionné dans le
 
 | Couche | Technologie | Rôle |
 |---|---|---|
-| Hyperviseur | VMware ESXi 7.0 U2 | Hébergement VMs, vSwitch, groupes de ports |
-| Pare-feu | OPNsense 26.1.3 (FreeBSD 14.3) | Cluster HA, CARP, pfSync, OpenVPN, NAT |
-| Annuaire | Windows Server 2022 (AD DS) | Kerberos, DNS, DHCP, GPO, FSMO |
-| SIEM/XDR | Wazuh v4.14.4 | FIM, Active Response, règles custom, détection CVE |
-| Supervision | Zabbix 7.4.9 | Agent + SNMP, triggers, alertes email |
-| Portail MFA | Authelia v4.39.15 + Nginx | Forward-auth, TOTP, backend LDAPS |
-| Base de données | Oracle 21c (Oracle Linux 9) | Dossiers patients (niveau HDS) |
-| Sauvegarde | Veeam B&R 13.0.1 | Agentless VMware, CBT, compression 5,5x |
-| ITSM | GLPI 10.0.15 | Ticketing, gestion d'assets, sync LDAP |
-| Alertes | Mailpit | Relais SMTP pour notifications Zabbix + Wazuh |
-| Accès distant | OpenVPN + Tailscale | Tunnel VPN (MFA) + management OOB |
-| Poste admin | Windows 10 Pro 22H2 | BitLocker, UAC max, Defender NIS, 9 GPOs |
+| Hyperviseur | VMware ESXi 7.0 U2 | 15 VMs, vSwitch, port groups VGT |
+| Pare-feu | OPNsense 26.1.3 | Cluster HA CARP, pfSync, OpenVPN, NAT |
+| Annuaire | Windows Server 2022 | AD DS, DNS, DHCP, GPO, FSMO (2 DCs) |
+| SIEM/XDR | Wazuh v4.14.4 | 35 règles custom, FIM, Active Response |
+| Supervision | Zabbix 7.4.9 | 14 hôtes, agent+SNMP, 20K items |
+| Portail MFA | Authelia v4.39.15 + Nginx | Forward-auth, TOTP, LDAPS |
+| Base de données | Oracle 21c XE | Dossiers patients HDS (CLINIQUE_DATA) |
+| Application | Node.js (port 8080) | Portail médical CRUD patients |
+| Sauvegarde | Veeam B&R 13.0.1 | 3 jobs, CBT, 300 Go repository |
+| ITSM | GLPI 10.0.15 | Ticketing, gestion d'assets |
+| Alertes | Mailpit | SMTP relay (Zabbix + Wazuh + Authelia) |
+| Accès distant | OpenVPN + Tailscale | VPN MFA + management OOB |
 
 ---
 
 ## 📸 Captures d'écran
 
-**OPNsense — Cluster HA Firewall**
+**Pare-feu OPNsense**
 
-| Dashboard | Statut CARP (FW1 MASTER) | Statut CARP (FW2 BACKUP) |
+| Dashboard FW1 | CARP FW1 (MASTER) | CARP FW2 (BACKUP) |
 |---|---|---|
-| ![Dashboard](docs/assets/screenshots/opnsense/dashboard-fw1.png) | ![CARP FW1](docs/assets/screenshots/opnsense/CARP-fw1_status.png) | ![CARP FW2](docs/assets/screenshots/opnsense/CARP-fw2_status.png) |
+| ![](docs/assets/screenshots/opnsense-01-dashboard-fw1.png) | ![](docs/assets/screenshots/opnsense-02-carp-status-fw1.png) | ![](docs/assets/screenshots/opnsense-03-carp-status-fw2.png) |
 
-**Wazuh — SIEM / XDR**
+**SIEM Wazuh**
 
-| Vue globale (11 agents) | Threat Hunting (MITRE) | Active Response (XSS détecté) |
+| Dashboard (11 agents) | Threat Hunting MITRE | Active Response XSS |
 |---|---|---|
-| ![Vue globale](docs/assets/screenshots/wazuh/wazuh-01-dashboard-overview.png) | ![Threat Hunting](docs/assets/screenshots/wazuh/wazuh-03-threat-hunting.png) | ![Active Response](docs/assets/screenshots/wazuh/wazuh-06-active-response-xss.png) |
+| ![](docs/assets/screenshots/wazuh-01-dashboard-overview.png) | ![](docs/assets/screenshots/wazuh-03-threat-hunting.png) | ![](docs/assets/screenshots/wazuh-06-active-response-xss.png) |
 
-**Zabbix — Supervision**
+**Zabbix Monitoring**
 
-| Dashboard (14 hôtes) | Performance Oracle | Alertes en cours |
+| Dashboard (14 hôtes) | Performance Oracle | Alertes |
 |---|---|---|
-| ![Dashboard](docs/assets/screenshots/zabbix/zabbix-01-dashboard.png) | ![Oracle](docs/assets/screenshots/zabbix/zabbix-03-oracle-cpu-memory.png) | ![Problèmes](docs/assets/screenshots/zabbix/zabbix-04-alert-problems.png) |
+| ![](docs/assets/screenshots/zabbix-01-dashboard.png) | ![](docs/assets/screenshots/zabbix-03-oracle-cpu-memory.png) | ![](docs/assets/screenshots/zabbix-04-alert-problems.png) |
+
+**Authentification MFA**
+
+| Login Authelia | TOTP (6 digits) | Portail médical |
+|---|---|---|
+| ![](docs/assets/screenshots/dmz-01-authelia-login.png) | ![](docs/assets/screenshots/dmz-02-authelia-totp.png) | ![](docs/assets/screenshots/oracle-01-portal-medical.png) |
+
+**Backup Veeam**
+
+| Jobs Oracle (Success) | Inventaire 15 VMs | Repository 300 Go |
+|---|---|---|
+| ![](docs/assets/screenshots/veeam-01-jobs-oracle-success.png) | ![](docs/assets/screenshots/veeam-02-inventory-15vms.png) | ![](docs/assets/screenshots/veeam-03-repository.png) |
+
+---
+
+## 🗂️ Structure du Dépôt
+
+```
+configs/
+├── opnsense/       # 208 règles pfctl, 35 alias, CARP HA, NAT
+├── wazuh/          # 35 règles HDS, ossec.conf, agent.conf
+├── zabbix/         # Templates, documentation 14 hôtes
+├── gpo/            # 10 GPOs, OUs, FSMO, DHCP, DNS, réplication AD
+├── nginx/          # Reverse proxy, forward-auth, TLS, DMZ
+├── authelia/       # MFA TOTP, LDAPS, politique deny/two_factor
+├── oracle/         # Instance XE, tablespaces, listener, audit
+└── veeam/          # PRA, 3 jobs, repository, inventaire 15 VMs
+
+docs/assets/
+├── screenshots/    # ~35 captures anonymisées
+└── diagrams/       # Matrice de flux inter-VLAN
+```
 
 ---
 
 ## 🚀 Ce que ce projet m'a appris
 
-- **La défense en profondeur** n'est pas un buzzword, chaque couche (firewall → segmentation → MFA → SIEM → backup) détecte des menaces que les autres laissent passer
-- **Des règles SIEM personnalisées** alignées sur des référentiels de conformité transforment un SIEM d'un agrégateur de logs en un véritable moteur de détection
-- **Pentester sa propre infrastructure** révèle des angles morts qu'une revue de configuration ne peut pas trouver
-- **La documentation est un contrôle de sécurité** — si ce n'est pas documenté, ça n'existe pas pour les auditeurs
+- **La défense en profondeur** n'est pas un buzzword — chaque couche détecte des menaces que les autres laissent passer
+- **Des règles SIEM personnalisées** alignées sur des référentiels transforment un SIEM en moteur de détection
+- **Pentester sa propre infrastructure** révèle des angles morts qu'une revue de config ne trouve pas
+- **La documentation est un contrôle de sécurité** — si ce n'est pas documenté, ça n'existe pas pour un auditeur
+- **L'isolation réseau stricte** (VLAN BACKUP sanctuarisé, GUEST totalement isolé) est la première ligne de défense contre le mouvement latéral
 
 ---
 
 ## 📄 Licence
 
-Ce projet est publié sous [licence MIT](LICENSE). Les fichiers de configuration sont anonymisés; aucun secret, credential ou donnée patient réelle n'est inclus dans ce dépôt.
+[Licence MIT](LICENSE) · Configurations anonymisées · Aucun secret ni donnée patient réelle
 
 ---
 
-**Construit avec 🔒 par Yemah**
-
-*Master 2 — Infrastructure Réseaux et Sécurité*
+**Construit avec 🔒 par Yemah** · *Master 2 — Infrastructure Réseaux et Sécurité*
 
 [![LinkedIn](https://img.shields.io/badge/LinkedIn-Profil-0A66C2?style=for-the-badge&logo=linkedin)](https://linkedin.com/in/steeve-womo)

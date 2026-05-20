@@ -3,9 +3,7 @@
 L'infrastructure est déployée sur **VMware ESXi 7.0 U2** avec une architecture **hybride Router-on-a-Stick + Access Ports**.
 
 ---
-<p align="center">
-  <a href="https://github.com/Yemah/clinique-chatelet-secure-infra"><img src="https://github.com/Yemah/clinique-chatelet-secure-infra/blob/main/docs/assets/diagrams/clinique-chatelet-architecture.png" width="800" alt="Schéma d'architecture"></a>
-</p>
+![Schema d'Architecture globale](../assets/diagrams/clinique-chatelet-architecture.png)
 
 
 

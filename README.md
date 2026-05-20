@@ -267,7 +267,7 @@ Audit offensif depuis **Kali Linux** en VLAN GUEST (555) — zéro connaissance 
 
 | Dashboard FW1 | CARP FW1 (MASTER) | CARP FW2 (BACKUP) |
 |---|---|---|
-| ![](docs/assets/screenshots/opnsense/opnsense-01-dashboard-fw1.png) | ![](docs/assets/screenshots/opnsense/opnsense-02-carp-status-fw1.png) | ![](docs/assets/screenshots/opnsense/opnsense-03-carp-status-fw2.png) |
+| ![](docs/assets/screenshots/opnsense/dashboard-fw1.png) | ![](docs/assets/screenshots/opnsense/CARP-fw1_status.png) | ![](docs/assets/screenshots/opnsense/CARP-fw2_status.png) |
 
 **SIEM Wazuh**
 

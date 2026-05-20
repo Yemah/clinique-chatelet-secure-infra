@@ -1,0 +1,336 @@
+<mxfile host="app.diagrams.net" agent="Claude">
+  <diagram id="clinique-chatelet-architecture" name="Architecture Réseau Globale">
+    <mxGraphModel dx="1147" dy="628" grid="1" gridSize="10" guides="1" tooltips="1" connect="1" arrows="1" fold="1" page="1" pageScale="1" pageWidth="1600" pageHeight="1200" math="0" shadow="0">
+      <root>
+        <mxCell id="0" />
+        <mxCell id="1" parent="0" />
+        <mxCell id="title" parent="1" style="text;html=1;align=center;verticalAlign=middle;resizable=0;points=[];autosize=1;strokeColor=none;fillColor=none;fontSize=14;" value="&lt;font style=&quot;font-size: 16px;&quot;&gt;&lt;b style=&quot;&quot;&gt;Architecture Réseau Sécurisée — Clinique Le Châtelet&lt;/b&gt;&lt;br&gt;VMware ESXi 7.0 U2 — OPNsense 26.1.3 HA — 6 VLANs — 15 VMs&lt;/font&gt;" vertex="1">
+          <mxGeometry height="50" width="520" x="380" y="10" as="geometry" />
+        </mxCell>
+        <mxCell id="internet" parent="1" style="ellipse;shape=cloud;whiteSpace=wrap;html=1;fillColor=#f5f5f5;strokeColor=#666666;fontStyle=1;fontSize=13;" value="INTERNET" vertex="1">
+          <mxGeometry height="80" width="200" x="530" y="70" as="geometry" />
+        </mxCell>
+        <mxCell id="remote_user" parent="1" style="shape=mxgraph.cisco.people.standing_man;html=1;whiteSpace=wrap;fillColor=#d5e8d4;strokeColor=#82b366;fontSize=10;" value="&lt;font style=&quot;font-size: 11px;&quot;&gt;🩺 Soignant distant&lt;br&gt;(OpenVPN + TOTP)&lt;/font&gt;" vertex="1">
+          <mxGeometry height="80" width="80" x="290" y="70" as="geometry" />
+        </mxCell>
+        <mxCell id="edge_remote" edge="1" parent="1" source="remote_user" style="edgeStyle=orthogonalEdgeStyle;dashed=1;strokeColor=#82b366;strokeWidth=2;" target="internet">
+          <mxGeometry relative="1" as="geometry" />
+        </mxCell>
+        <mxCell id="label_vpn" connectable="0" parent="edge_remote" style="edgeLabel;html=1;align=center;verticalAlign=middle;fontSize=9;fontColor=#82b366;" value="VPN UDP 1194" vertex="1">
+          <mxGeometry relative="1" x="-0.2" as="geometry">
+            <mxPoint as="offset" />
+          </mxGeometry>
+        </mxCell>
+        <mxCell id="sophos" parent="1" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#f5f5f5;strokeColor=#666666;fontSize=11;" value="&lt;font style=&quot;font-size: 13px;&quot;&gt;&lt;b style=&quot;&quot;&gt;Sophos UTM&lt;/b&gt;&lt;br&gt;WAN Gateway&lt;br&gt;192.168.65.254&lt;/font&gt;" vertex="1">
+          <mxGeometry height="60" width="200" x="530" y="180" as="geometry" />
+        </mxCell>
+        <mxCell id="edge_inet_sophos" edge="1" parent="1" source="internet" style="edgeStyle=orthogonalEdgeStyle;strokeWidth=2;strokeColor=#666666;" target="sophos">
+          <mxGeometry relative="1" as="geometry" />
+        </mxCell>
+        <mxCell id="wan_label" parent="1" style="text;html=1;align=center;verticalAlign=middle;fontSize=10;fontColor=#666666;fontStyle=2;" value="&lt;font style=&quot;font-size: 12px;&quot;&gt;VLAN 65 — WAN (192.168.65.0/24)&lt;/font&gt;" vertex="1">
+          <mxGeometry height="20" width="250" x="505" y="248" as="geometry" />
+        </mxCell>
+        <mxCell id="ha_cluster" parent="1" style="rounded=1;whiteSpace=wrap;html=1;fillColor=none;strokeColor=#0e7faa;strokeWidth=2;dashed=1;dashPattern=8 4;" value="" vertex="1">
+          <mxGeometry height="170" width="1000" x="130" y="280" as="geometry" />
+        </mxCell>
+        <mxCell id="ha_label" parent="1" style="text;html=1;align=center;verticalAlign=top;fontSize=11;fontColor=#0e7faa;" value="&lt;font style=&quot;font-size: 13px;&quot;&gt;&lt;b style=&quot;&quot;&gt;Cluster Haute Disponibilité — CARP + pfSync&lt;/b&gt;&lt;br&gt;Policy: Default Deny | Anti-spoofing | Anti-bogons&lt;/font&gt;" vertex="1">
+          <mxGeometry height="40" width="600" x="330" y="283" as="geometry" />
+        </mxCell>
+        <mxCell id="fw1" parent="1" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#dae8fc;strokeColor=#6c8ebf;fontSize=10;fontStyle=0;verticalAlign=middle;" value="&lt;font style=&quot;font-size: 13px;&quot;&gt;&lt;b style=&quot;&quot;&gt;OPNsense FW1&lt;/b&gt;&lt;br&gt;MASTER (advskew 0)&lt;br&gt;WAN: 192.168.65.11&lt;br&gt;HA: 10.0.0.1/30&lt;/font&gt;" vertex="1">
+          <mxGeometry height="90" width="340" x="170" y="330" as="geometry" />
+        </mxCell>
+        <mxCell id="fw1_icon" parent="1" style="text;html=1;fontSize=24;align=center;" value="🛡️" vertex="1">
+          <mxGeometry height="40" width="40" x="150" y="340" as="geometry" />
+        </mxCell>
+        <mxCell id="fw2" parent="1" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#dae8fc;strokeColor=#6c8ebf;fontSize=10;fontStyle=0;verticalAlign=middle;" value="&lt;font style=&quot;font-size: 13px;&quot;&gt;&lt;b style=&quot;&quot;&gt;OPNsense FW2&lt;/b&gt;&lt;br&gt;BACKUP (advskew 100)&lt;br&gt;WAN: 192.168.65.99&lt;br&gt;HA: 10.0.0.2/30&lt;/font&gt;" vertex="1">
+          <mxGeometry height="90" width="340" x="750" y="330" as="geometry" />
+        </mxCell>
+        <mxCell id="fw2_icon" parent="1" style="text;html=1;fontSize=24;align=center;" value="🛡️" vertex="1">
+          <mxGeometry height="40" width="40" x="1070" y="340" as="geometry" />
+        </mxCell>
+        <mxCell id="pfsync" edge="1" parent="1" source="fw1" style="edgeStyle=orthogonalEdgeStyle;strokeColor=#0e7faa;strokeWidth=2;dashed=1;dashPattern=4 4;" target="fw2">
+          <mxGeometry relative="1" as="geometry" />
+        </mxCell>
+        <mxCell id="pfsync_label" connectable="0" parent="pfsync" style="edgeLabel;html=1;align=center;verticalAlign=middle;fontSize=10;fontColor=#0e7faa;" value="&lt;font style=&quot;font-size: 12px;&quot;&gt;&lt;b style=&quot;&quot;&gt;pfSync&lt;/b&gt;&lt;br&gt;10.0.0.0/30 (vmx2)&lt;/font&gt;" vertex="1">
+          <mxGeometry relative="1" as="geometry">
+            <mxPoint y="-15" as="offset" />
+          </mxGeometry>
+        </mxCell>
+        <mxCell id="edge_sophos_cluster" edge="1" parent="1" source="sophos" style="edgeStyle=orthogonalEdgeStyle;strokeWidth=2;strokeColor=#666666;" target="ha_cluster">
+          <mxGeometry relative="1" as="geometry" />
+        </mxCell>
+        <mxCell id="trunk_line" edge="1" parent="1" style="endArrow=none;strokeWidth=3;strokeColor=#333333;" value="">
+          <mxGeometry relative="1" as="geometry">
+            <mxPoint x="630" y="450" as="sourcePoint" />
+            <mxPoint x="630" y="500" as="targetPoint" />
+          </mxGeometry>
+        </mxCell>
+        <mxCell id="trunk_label" parent="1" style="text;html=1;align=center;fontSize=10;fontColor=#333333;" value="&lt;b&gt;&lt;font style=&quot;font-size: 11px;&quot;&gt;802.1Q Trunk (VLAN 4095 VGT)&lt;/font&gt;&lt;/b&gt;" vertex="1">
+          <mxGeometry height="20" width="200" x="660" y="465" as="geometry" />
+        </mxCell>
+        <mxCell id="bus_top" edge="1" parent="1" style="endArrow=none;strokeWidth=3;strokeColor=#333333;" value="">
+          <mxGeometry relative="1" as="geometry">
+            <mxPoint x="100" y="500" as="sourcePoint" />
+            <mxPoint x="1160" y="500" as="targetPoint" />
+          </mxGeometry>
+        </mxCell>
+        <mxCell id="vlan111" parent="1" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#dae8fc;strokeColor=#6c8ebf;strokeWidth=2;opacity=30;" value="" vertex="1">
+          <mxGeometry height="310" width="350" x="30" y="520" as="geometry" />
+        </mxCell>
+        <mxCell id="vlan111_title" parent="1" style="text;html=1;align=center;fontSize=10;fontColor=#1A3A6B;fontStyle=0;" value="&lt;font style=&quot;font-size: 12px;&quot;&gt;&lt;b style=&quot;&quot;&gt;VLAN 111 — SRV&lt;/b&gt;&lt;br&gt;172.16.11.0/24 | GW: .254 (CARP vhid 11)&lt;/font&gt;" vertex="1">
+          <mxGeometry height="35" width="330" x="40" y="525" as="geometry" />
+        </mxCell>
+        <mxCell id="dc1" parent="1" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#FFFFFF;strokeColor=#6c8ebf;fontSize=9;" value="&lt;font style=&quot;font-size: 12px;&quot;&gt;DC1 (AD/DNS/DHCP)&lt;br&gt;172.16.11.11&lt;/font&gt;" vertex="1">
+          <mxGeometry height="35" width="150" x="50" y="565" as="geometry" />
+        </mxCell>
+        <mxCell id="dc2" parent="1" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#FFFFFF;strokeColor=#6c8ebf;fontSize=9;" value="&lt;font style=&quot;font-size: 12px;&quot;&gt;DC2 (AD/DNS)&lt;br&gt;172.16.11.12&lt;/font&gt;" vertex="1">
+          <mxGeometry height="35" width="150" x="210" y="565" as="geometry" />
+        </mxCell>
+        <mxCell id="oracle" parent="1" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#FFFFFF;strokeColor=#6c8ebf;fontSize=9;" value="&lt;font style=&quot;font-size: 12px;&quot;&gt;🗄️ SRV-ORACLE-DB-01&lt;br&gt;Oracle 21c XE | 172.16.11.20&lt;/font&gt;" vertex="1">
+          <mxGeometry height="35" width="310" x="50" y="610" as="geometry" />
+        </mxCell>
+        <mxCell id="zabbix" parent="1" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#FFFFFF;strokeColor=#6c8ebf;fontSize=9;" value="&lt;font style=&quot;font-size: 12px;&quot;&gt;SRV-ZABBIX (Zabbix 7.4)&lt;br&gt;172.16.11.40&lt;/font&gt;" vertex="1">
+          <mxGeometry height="35" width="150" x="50" y="655" as="geometry" />
+        </mxCell>
+        <mxCell id="wazuh" parent="1" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#FFFFFF;strokeColor=#6c8ebf;fontSize=9;" value="&lt;font style=&quot;font-size: 12px;&quot;&gt;SRV-WAZUH (Wazuh 4.14)&lt;br&gt;172.16.11.50&lt;/font&gt;" vertex="1">
+          <mxGeometry height="35" width="150" x="210" y="655" as="geometry" />
+        </mxCell>
+        <mxCell id="glpi" parent="1" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#FFFFFF;strokeColor=#6c8ebf;fontSize=9;" value="&lt;font style=&quot;font-size: 12px;&quot;&gt;GLPI-Srv (GLPI 10.0)&lt;br&gt;172.16.11.60&lt;/font&gt;" vertex="1">
+          <mxGeometry height="35" width="150" x="50" y="700" as="geometry" />
+        </mxCell>
+        <mxCell id="drop111" edge="1" parent="1" style="endArrow=block;endFill=1;strokeWidth=2;strokeColor=#6c8ebf;" value="">
+          <mxGeometry relative="1" as="geometry">
+            <mxPoint x="205" y="500" as="sourcePoint" />
+            <mxPoint x="205" y="520" as="targetPoint" />
+          </mxGeometry>
+        </mxCell>
+        <mxCell id="vlan222" parent="1" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#d5e8d4;strokeColor=#82b366;strokeWidth=2;opacity=30;" value="" vertex="1">
+          <mxGeometry height="160" width="230" x="410" y="520" as="geometry" />
+        </mxCell>
+        <mxCell id="vlan222_title" parent="1" style="text;html=1;align=center;fontSize=10;fontColor=#145C14;" value="&lt;font style=&quot;font-size: 12px;&quot;&gt;&lt;b style=&quot;&quot;&gt;VLAN 222 — CLIENT&lt;/b&gt;&lt;br&gt;172.16.22.0/24 | GW: .254 (vhid 22)&lt;/font&gt;" vertex="1">
+          <mxGeometry height="35" width="220" x="415" y="525" as="geometry" />
+        </mxCell>
+        <mxCell id="poste_client" parent="1" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#FFFFFF;strokeColor=#82b366;fontSize=9;" value="&lt;font style=&quot;font-size: 12px;&quot;&gt;💻 Postes de travail&lt;br&gt;soignants&lt;/font&gt;" vertex="1">
+          <mxGeometry height="35" width="190" x="430" y="570" as="geometry" />
+        </mxCell>
+        <mxCell id="client_note" parent="1" style="text;html=1;align=center;fontSize=8;fontColor=#666666;fontStyle=2;" value="&lt;font style=&quot;font-size: 11px;&quot;&gt;Accès : Portail DMZ + MAJ&lt;br&gt;Bloqué : SRV + BACKUP&lt;/font&gt;" vertex="1">
+          <mxGeometry height="30" width="190" x="430" y="615" as="geometry" />
+        </mxCell>
+        <mxCell id="drop222" edge="1" parent="1" style="endArrow=block;endFill=1;strokeWidth=2;strokeColor=#82b366;" value="">
+          <mxGeometry relative="1" as="geometry">
+            <mxPoint x="525" y="500" as="sourcePoint" />
+            <mxPoint x="525" y="520" as="targetPoint" />
+          </mxGeometry>
+        </mxCell>
+        <mxCell id="vlan333" parent="1" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#ffe6cc;strokeColor=#d79b00;strokeWidth=2;opacity=30;" value="" vertex="1">
+          <mxGeometry height="310" width="350" x="670" y="520" as="geometry" />
+        </mxCell>
+        <mxCell id="vlan333_title" parent="1" style="text;html=1;align=center;fontSize=10;fontColor=#6B3000;" value="&lt;font style=&quot;font-size: 12px;&quot;&gt;&lt;b style=&quot;&quot;&gt;VLAN 333 — DMZ&lt;/b&gt;&lt;br&gt;172.16.33.0/24 | GW: .254 (vhid 33)&lt;/font&gt;" vertex="1">
+          <mxGeometry height="35" width="330" x="680" y="525" as="geometry" />
+        </mxCell>
+        <mxCell id="proxy" parent="1" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#FFFFFF;strokeColor=#d79b00;fontSize=9;" value="&lt;font style=&quot;font-size: 12px;&quot;&gt;🔒 SRV-PROXY-01&lt;br&gt;Nginx + Authelia MFA&lt;br&gt;172.16.33.10&lt;/font&gt;" vertex="1">
+          <mxGeometry height="50" width="150" x="690" y="565" as="geometry" />
+        </mxCell>
+        <mxCell id="webapp" parent="1" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#FFFFFF;strokeColor=#d79b00;fontSize=9;" value="&lt;font style=&quot;font-size: 12px;&quot;&gt;🌐 SRV-WEB-01&lt;br&gt;Portail Node.js :8080&lt;br&gt;172.16.33.20&lt;/font&gt;" vertex="1">
+          <mxGeometry height="50" width="150" x="850" y="565" as="geometry" />
+        </mxCell>
+        <mxCell id="mailpit" parent="1" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#FFFFFF;strokeColor=#d79b00;fontSize=9;" value="&lt;font style=&quot;font-size: 12px;&quot;&gt;📧 Mailpit&lt;br&gt;SMTP :1025 | Web :8025&lt;br&gt;(co-hosted proxy)&lt;/font&gt;" vertex="1">
+          <mxGeometry height="45" width="150" x="690" y="625" as="geometry" />
+        </mxCell>
+        <mxCell id="flow_proxy_web" edge="1" parent="1" source="proxy" style="edgeStyle=orthogonalEdgeStyle;strokeColor=#d79b00;strokeWidth=1;" target="webapp">
+          <mxGeometry relative="1" as="geometry" />
+        </mxCell>
+        <mxCell id="label_8080" connectable="0" parent="flow_proxy_web" style="edgeLabel;html=1;fontSize=8;fontColor=#d79b00;" value=":8080" vertex="1">
+          <mxGeometry relative="1" as="geometry">
+            <mxPoint as="offset" />
+          </mxGeometry>
+        </mxCell>
+        <mxCell id="flow_web_oracle" edge="1" parent="1" source="webapp" style="edgeStyle=orthogonalEdgeStyle;strokeColor=#FF0000;strokeWidth=2;dashed=1;dashPattern=8 4;" target="oracle">
+          <mxGeometry relative="1" as="geometry">
+            <Array as="points">
+              <mxPoint x="925" y="700" />
+              <mxPoint x="400" y="700" />
+              <mxPoint x="400" y="627" />
+            </Array>
+          </mxGeometry>
+        </mxCell>
+        <mxCell id="label_oracle_flow" connectable="0" parent="flow_web_oracle" style="edgeLabel;html=1;fontSize=9;fontColor=#FF0000;fontStyle=1;" value="&lt;font style=&quot;font-size: 10px;&quot;&gt;Oracle :1521&lt;br&gt;(flux HDS critique)&lt;/font&gt;" vertex="1">
+          <mxGeometry relative="1" x="0.2" as="geometry">
+            <mxPoint as="offset" />
+          </mxGeometry>
+        </mxCell>
+        <mxCell id="flow_proxy_ad" edge="1" parent="1" source="proxy" style="edgeStyle=orthogonalEdgeStyle;strokeColor=#0e7faa;strokeWidth=1;dashed=1;" target="dc1">
+          <mxGeometry relative="1" as="geometry">
+            <Array as="points">
+              <mxPoint x="390" y="590" />
+              <mxPoint x="390" y="590" />
+            </Array>
+          </mxGeometry>
+        </mxCell>
+        <mxCell id="label_ldaps" connectable="0" parent="flow_proxy_ad" style="edgeLabel;html=1;fontSize=8;fontColor=#0e7faa;" value="&lt;font style=&quot;font-size: 9px;&quot;&gt;LDAPS :636&lt;/font&gt;" vertex="1">
+          <mxGeometry relative="1" as="geometry">
+            <mxPoint as="offset" />
+          </mxGeometry>
+        </mxCell>
+        <mxCell id="9HhlMy2V4ZCeH9UEY7sW-1" connectable="0" parent="flow_proxy_ad" style="edgeLabel;html=1;align=center;verticalAlign=middle;resizable=0;points=[];" value="Text" vertex="1">
+          <mxGeometry relative="1" x="0.6955" y="-4" as="geometry">
+            <mxPoint y="14" as="offset" />
+          </mxGeometry>
+        </mxCell>
+        <mxCell id="drop333" edge="1" parent="1" style="endArrow=block;endFill=1;strokeWidth=2;strokeColor=#d79b00;" value="">
+          <mxGeometry relative="1" as="geometry">
+            <mxPoint x="845" y="500" as="sourcePoint" />
+            <mxPoint x="845" y="520" as="targetPoint" />
+          </mxGeometry>
+        </mxCell>
+        <mxCell id="vlan444" parent="1" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#f8cecc;strokeColor=#b85450;strokeWidth=2;opacity=30;" value="" vertex="1">
+          <mxGeometry height="150" width="350" x="30" y="860" as="geometry" />
+        </mxCell>
+        <mxCell id="vlan444_title" parent="1" style="text;html=1;align=center;fontSize=10;fontColor=#b85450;" value="&lt;font style=&quot;font-size: 12px;&quot;&gt;&lt;b style=&quot;&quot;&gt;VLAN 444 — BACKUP&lt;/b&gt; 🔒&lt;br&gt;172.16.44.0/24 | GW: .254 (vhid 44) | Sanctuarisé&lt;/font&gt;" vertex="1">
+          <mxGeometry height="35" width="330" x="40" y="865" as="geometry" />
+        </mxCell>
+        <mxCell id="veeam" parent="1" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#FFFFFF;strokeColor=#b85450;fontSize=9;" value="&lt;font style=&quot;font-size: 12px;&quot;&gt;💾 SRV-VEEAM-BACKUP&lt;br&gt;Veeam B&amp;amp;R 13.0.1&lt;br&gt;172.16.44.70 | Repo 300 Go (E:\)&lt;/font&gt;" vertex="1">
+          <mxGeometry height="45" width="310" x="50" y="905" as="geometry" />
+        </mxCell>
+        <mxCell id="backup_note" parent="1" style="text;html=1;align=center;fontSize=8;fontColor=#b85450;fontStyle=2;" value="&lt;font style=&quot;font-size: 11px;&quot;&gt;⛔ Bloqué vers CLIENT + DMZ&lt;br&gt;Wazuh rule 200202 (active response)&lt;/font&gt;" vertex="1">
+          <mxGeometry height="30" width="310" x="50" y="955" as="geometry" />
+        </mxCell>
+        <mxCell id="drop444" edge="1" parent="1" style="endArrow=block;endFill=1;strokeWidth=2;strokeColor=#b85450;" value="">
+          <mxGeometry relative="1" as="geometry">
+            <mxPoint x="205" y="830" as="sourcePoint" />
+            <mxPoint x="205" y="860" as="targetPoint" />
+          </mxGeometry>
+        </mxCell>
+        <mxCell id="vert_left" edge="1" parent="1" style="endArrow=none;strokeWidth=2;strokeColor=#333333;" value="">
+          <mxGeometry relative="1" as="geometry">
+            <mxPoint x="205" y="500" as="sourcePoint" />
+            <mxPoint x="205" y="830" as="targetPoint" />
+          </mxGeometry>
+        </mxCell>
+        <mxCell id="vlan555" parent="1" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#e1d5e7;strokeColor=#9673a6;strokeWidth=2;opacity=30;" value="" vertex="1">
+          <mxGeometry height="160" width="230" x="410" y="720" as="geometry" />
+        </mxCell>
+        <mxCell id="vlan555_title" parent="1" style="text;html=1;align=center;fontSize=10;fontColor=#9673a6;" value="&lt;font style=&quot;font-size: 12px;&quot;&gt;&lt;b style=&quot;&quot;&gt;VLAN 555 — GUEST&lt;/b&gt;&lt;br&gt;172.16.55.0/24 | GW: .254 (vhid 55)&lt;/font&gt;" vertex="1">
+          <mxGeometry height="35" width="220" x="415" y="725" as="geometry" />
+        </mxCell>
+        <mxCell id="guest_info" parent="1" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#FFFFFF;strokeColor=#9673a6;fontSize=9;" value="&lt;font style=&quot;font-size: 12px;&quot;&gt;🏥 Réseau patients isolé&lt;br&gt;DNS: 8.8.8.8 / 1.1.1.1&lt;br&gt;HTTP/HTTPS uniquement&lt;/font&gt;" vertex="1">
+          <mxGeometry height="45" width="190" x="430" y="770" as="geometry" />
+        </mxCell>
+        <mxCell id="guest_note" parent="1" style="text;html=1;align=center;fontSize=8;fontColor=#9673a6;fontStyle=2;" value="&lt;font style=&quot;font-size: 11px;&quot;&gt;⛔ Bloqué vers PRIVATE_NETWORK&lt;br&gt;0 service exposé sur gateway&lt;/font&gt;" vertex="1">
+          <mxGeometry height="30" width="190" x="430" y="825" as="geometry" />
+        </mxCell>
+        <mxCell id="drop555" edge="1" parent="1" style="endArrow=block;endFill=1;strokeWidth=2;strokeColor=#9673a6;" value="">
+          <mxGeometry relative="1" as="geometry">
+            <mxPoint x="525" y="680" as="sourcePoint" />
+            <mxPoint x="525" y="720" as="targetPoint" />
+          </mxGeometry>
+        </mxCell>
+        <mxCell id="vert_mid" edge="1" parent="1" style="endArrow=none;strokeWidth=2;strokeColor=#333333;" value="">
+          <mxGeometry relative="1" as="geometry">
+            <mxPoint x="525" y="500" as="sourcePoint" />
+            <mxPoint x="525" y="680" as="targetPoint" />
+          </mxGeometry>
+        </mxCell>
+        <mxCell id="vlan999" parent="1" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#fff2cc;strokeColor=#d6b656;strokeWidth=2;opacity=30;" value="" vertex="1">
+          <mxGeometry height="150" width="350" x="670" y="860" as="geometry" />
+        </mxCell>
+        <mxCell id="vlan999_title" parent="1" style="text;html=1;align=center;fontSize=10;fontColor=#d6b656;" value="&lt;font style=&quot;font-size: 12px;&quot;&gt;&lt;b style=&quot;&quot;&gt;VLAN 999 — MGMT&lt;/b&gt;&lt;br&gt;172.16.99.0/24 | GW: .254 (vhid 99) | Out-of-Band&lt;/font&gt;" vertex="1">
+          <mxGeometry height="35" width="330" x="680" y="865" as="geometry" />
+        </mxCell>
+        <mxCell id="bastion" parent="1" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#FFFFFF;strokeColor=#d6b656;fontSize=9;" value="&lt;font style=&quot;font-size: 12px;&quot;&gt;🖥️ Poste-Admin-IT-Durcis&lt;br&gt;Win 10 Pro | BitLocker | 9 GPOs&lt;br&gt;172.16.99.115&lt;/font&gt;" vertex="1">
+          <mxGeometry height="45" width="310" x="690" y="905" as="geometry" />
+        </mxCell>
+        <mxCell id="mgmt_note" parent="1" style="text;html=1;align=center;fontSize=8;fontColor=#d6b656;fontStyle=2;" value="&lt;font style=&quot;font-size: 11px;&quot;&gt;✅ Accès complet PRIVATE_NETWORK&lt;br&gt;FW GUI :4443 | Mailpit :8025&lt;/font&gt;" vertex="1">
+          <mxGeometry height="30" width="310" x="690" y="955" as="geometry" />
+        </mxCell>
+        <mxCell id="drop999" edge="1" parent="1" style="endArrow=block;endFill=1;strokeWidth=2;strokeColor=#d6b656;" value="">
+          <mxGeometry relative="1" as="geometry">
+            <mxPoint x="845" y="830" as="sourcePoint" />
+            <mxPoint x="845" y="860" as="targetPoint" />
+          </mxGeometry>
+        </mxCell>
+        <mxCell id="vert_right" edge="1" parent="1" style="endArrow=none;strokeWidth=2;strokeColor=#333333;" value="">
+          <mxGeometry relative="1" as="geometry">
+            <mxPoint x="845" y="500" as="sourcePoint" />
+            <mxPoint x="845" y="830" as="targetPoint" />
+          </mxGeometry>
+        </mxCell>
+        <mxCell id="vpn_subnet" parent="1" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#d5e8d4;strokeColor=#82b366;fontSize=9;dashed=1;dashPattern=4 4;" value="&lt;font style=&quot;font-size: 11px;&quot;&gt;OpenVPN&lt;br&gt;10.100.100.0/24&lt;br&gt;UDP 1194 + TOTP&lt;/font&gt;" vertex="1">
+          <mxGeometry height="55" width="130" x="1060" y="520" as="geometry" />
+        </mxCell>
+        <mxCell id="tailscale" parent="1" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#e1d5e7;strokeColor=#9673a6;fontSize=9;dashed=1;dashPattern=4 4;" value="&lt;font style=&quot;font-size: 11px;&quot;&gt;Tailscale&lt;br&gt;Management OOB&lt;br&gt;100.x.x.x/32&lt;/font&gt;" vertex="1">
+          <mxGeometry height="55" width="130" x="1060" y="590" as="geometry" />
+        </mxCell>
+        <mxCell id="legend_box" parent="1" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#f5f5f5;strokeColor=#CCCCCC;" value="" vertex="1">
+          <mxGeometry height="310" width="180" x="1050" y="700" as="geometry" />
+        </mxCell>
+        <mxCell id="legend_title" parent="1" style="text;html=1;align=center;fontSize=11;" value="&lt;b&gt;Légende&lt;/b&gt;" vertex="1">
+          <mxGeometry height="25" width="180" x="1050" y="705" as="geometry" />
+        </mxCell>
+        <mxCell id="leg1" parent="1" style="rounded=1;fillColor=#dae8fc;strokeColor=#6c8ebf;" value="" vertex="1">
+          <mxGeometry height="15" width="20" x="1065" y="735" as="geometry" />
+        </mxCell>
+        <mxCell id="leg1t" parent="1" style="text;html=1;fontSize=9;" value="&lt;font style=&quot;font-size: 10px;&quot;&gt;VLAN 111 SRV&lt;/font&gt;" vertex="1">
+          <mxGeometry height="20" width="120" x="1090" y="733" as="geometry" />
+        </mxCell>
+        <mxCell id="leg2" parent="1" style="rounded=1;fillColor=#d5e8d4;strokeColor=#82b366;" value="" vertex="1">
+          <mxGeometry height="15" width="20" x="1065" y="760" as="geometry" />
+        </mxCell>
+        <mxCell id="leg2t" parent="1" style="text;html=1;fontSize=9;" value="&lt;font style=&quot;font-size: 11px;&quot;&gt;VLAN 222 CLIENT&lt;/font&gt;" vertex="1">
+          <mxGeometry height="20" width="120" x="1090" y="758" as="geometry" />
+        </mxCell>
+        <mxCell id="leg3" parent="1" style="rounded=1;fillColor=#ffe6cc;strokeColor=#d79b00;" value="" vertex="1">
+          <mxGeometry height="15" width="20" x="1065" y="785" as="geometry" />
+        </mxCell>
+        <mxCell id="leg3t" parent="1" style="text;html=1;fontSize=9;" value="&lt;font style=&quot;font-size: 11px;&quot;&gt;VLAN 333 DMZ&lt;/font&gt;" vertex="1">
+          <mxGeometry height="20" width="120" x="1090" y="783" as="geometry" />
+        </mxCell>
+        <mxCell id="leg4" parent="1" style="rounded=1;fillColor=#f8cecc;strokeColor=#b85450;" value="" vertex="1">
+          <mxGeometry height="15" width="20" x="1065" y="810" as="geometry" />
+        </mxCell>
+        <mxCell id="leg4t" parent="1" style="text;html=1;fontSize=9;" value="&lt;font style=&quot;font-size: 11px;&quot;&gt;VLAN 444 BACKUP&lt;/font&gt;" vertex="1">
+          <mxGeometry height="20" width="120" x="1090" y="808" as="geometry" />
+        </mxCell>
+        <mxCell id="leg5" parent="1" style="rounded=1;fillColor=#e1d5e7;strokeColor=#9673a6;" value="" vertex="1">
+          <mxGeometry height="15" width="20" x="1065" y="835" as="geometry" />
+        </mxCell>
+        <mxCell id="leg5t" parent="1" style="text;html=1;fontSize=9;" value="&lt;font style=&quot;font-size: 11px;&quot;&gt;VLAN 555 GUEST&lt;/font&gt;" vertex="1">
+          <mxGeometry height="20" width="120" x="1090" y="833" as="geometry" />
+        </mxCell>
+        <mxCell id="leg6" parent="1" style="rounded=1;fillColor=#fff2cc;strokeColor=#d6b656;" value="" vertex="1">
+          <mxGeometry height="15" width="20" x="1065" y="860" as="geometry" />
+        </mxCell>
+        <mxCell id="leg6t" parent="1" style="text;html=1;fontSize=9;" value="&lt;font style=&quot;font-size: 11px;&quot;&gt;VLAN 999 MGMT&lt;/font&gt;" vertex="1">
+          <mxGeometry height="20" width="120" x="1090" y="858" as="geometry" />
+        </mxCell>
+        <mxCell id="leg7" edge="1" parent="1" style="endArrow=none;strokeColor=#FF0000;strokeWidth=2;dashed=1;" value="">
+          <mxGeometry relative="1" as="geometry">
+            <mxPoint x="1065" y="895" as="sourcePoint" />
+            <mxPoint x="1085" y="895" as="targetPoint" />
+          </mxGeometry>
+        </mxCell>
+        <mxCell id="leg7t" parent="1" style="text;html=1;fontSize=9;fontColor=#FF0000;" value="&lt;font style=&quot;font-size: 11px;&quot;&gt;Flux HDS critique&lt;/font&gt;" vertex="1">
+          <mxGeometry height="20" width="120" x="1090" y="885" as="geometry" />
+        </mxCell>
+        <mxCell id="leg8" edge="1" parent="1" style="endArrow=none;strokeColor=#0e7faa;strokeWidth=2;dashed=1;" value="">
+          <mxGeometry relative="1" as="geometry">
+            <mxPoint x="1065" y="920" as="sourcePoint" />
+            <mxPoint x="1085" y="920" as="targetPoint" />
+          </mxGeometry>
+        </mxCell>
+        <mxCell id="leg8t" parent="1" style="text;html=1;fontSize=9;fontColor=#0e7faa;" value="&lt;font style=&quot;font-size: 11px;&quot;&gt;LDAPS / pfSync&lt;/font&gt;" vertex="1">
+          <mxGeometry height="20" width="120" x="1090" y="910" as="geometry" />
+        </mxCell>
+        <mxCell id="leg9" parent="1" style="text;html=1;fontSize=9;fontColor=#333333;fontStyle=1;" value="━━━" vertex="1">
+          <mxGeometry height="20" width="30" x="1060" y="933" as="geometry" />
+        </mxCell>
+        <mxCell id="leg9t" parent="1" style="text;html=1;fontSize=9;" value="&lt;font style=&quot;font-size: 11px;&quot;&gt;Trunk 802.1Q&lt;/font&gt;" vertex="1">
+          <mxGeometry height="20" width="120" x="1090" y="935" as="geometry" />
+        </mxCell>
+        <mxCell id="esxi_info" parent="1" style="text;html=1;align=center;fontSize=10;fontColor=#666666;fontStyle=0;" value="&lt;font style=&quot;font-size: 12px;&quot;&gt;&lt;b style=&quot;&quot;&gt;Hyperviseur&lt;/b&gt;: VMware ESXi 7.0 U2 — esxi4 (192.168.1.153)&lt;br&gt;&lt;b style=&quot;&quot;&gt;15 VMs&lt;/b&gt; | Stockage total: ~1,28 To | vSwitch0 + 6 Port Groups Access + 1 Trunk (VGT 4095)&lt;/font&gt;" vertex="1">
+          <mxGeometry height="30" width="820" x="200" y="1030" as="geometry" />
+        </mxCell>
+      </root>
+    </mxGraphModel>
+  </diagram>
+</mxfile>

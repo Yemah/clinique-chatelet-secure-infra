@@ -30,4 +30,4 @@ Oracle 21c XE sur Oracle Linux 9. Tablespace dédié `CLINIQUE_DATA` (1 Go). App
 | [`oracle-audit.txt`](https://github.com/Yemah/clinique-chatelet-secure-infra/blob/main/configs/oracle/oracle-audit.txt) | Audit instance + tablespaces |
 | [`oracle-listener.txt`](https://github.com/Yemah/clinique-chatelet-secure-infra/blob/main/configs/oracle/oracle-listener.txt) | Listener status |
 
-![Portail Médical](../assets/screenshots/oracle-01-portal-medical.png)
+![Portail Médical](../assets/screenshots/authelia/oracle-01-portal-medical.png)

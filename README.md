@@ -267,31 +267,31 @@ Audit offensif depuis **Kali Linux** en VLAN GUEST (555) — zéro connaissance 
 
 | Dashboard FW1 | CARP FW1 (MASTER) | CARP FW2 (BACKUP) |
 |---|---|---|
-| ![](docs/assets/screenshots/opnsense-01-dashboard-fw1.png) | ![](docs/assets/screenshots/opnsense-02-carp-status-fw1.png) | ![](docs/assets/screenshots/opnsense-03-carp-status-fw2.png) |
+| ![](docs/assets/screenshots/opnsense/opnsense-01-dashboard-fw1.png) | ![](docs/assets/screenshots/opnsense/opnsense-02-carp-status-fw1.png) | ![](docs/assets/screenshots/opnsense/opnsense-03-carp-status-fw2.png) |
 
 **SIEM Wazuh**
 
 | Dashboard (11 agents) | Threat Hunting MITRE | Active Response XSS |
 |---|---|---|
-| ![](docs/assets/screenshots/wazuh-01-dashboard-overview.png) | ![](docs/assets/screenshots/wazuh-03-threat-hunting.png) | ![](docs/assets/screenshots/wazuh-06-active-response-xss.png) |
+| ![](docs/assets/screenshots/wazuh/wazuh-01-dashboard-overview.png) | ![](docs/assets/screenshots/wazuh/wazuh-03-threat-hunting.png) | ![](docs/assets/screenshots/wazuh/wazuh-06-active-response-xss.png) |
 
 **Zabbix Monitoring**
 
 | Dashboard (14 hôtes) | Performance Oracle | Alertes |
 |---|---|---|
-| ![](docs/assets/screenshots/zabbix-01-dashboard.png) | ![](docs/assets/screenshots/zabbix-03-oracle-cpu-memory.png) | ![](docs/assets/screenshots/zabbix-04-alert-problems.png) |
+| ![](docs/assets/screenshots/zabbix/zabbix-01-dashboard.png) | ![](docs/assets/screenshots/zabbix/zabbix-03-oracle-cpu-memory.png) | ![](docs/assets/screenshots/zabbix/zabbix-04-alert-problems.png) |
 
 **Authentification MFA**
 
 | Login Authelia | TOTP (6 digits) | Portail médical |
 |---|---|---|
-| ![](docs/assets/screenshots/dmz-01-authelia-login.png) | ![](docs/assets/screenshots/dmz-02-authelia-totp.png) | ![](docs/assets/screenshots/oracle-01-portal-medical.png) |
+| ![](docs/assets/screenshots/authelia/dmz-01-authelia-login.png) | ![](docs/assets/screenshots/authelia/dmz-02-authelia-totp.png) | ![](docs/assets/screenshots/authelia/oracle-01-portal-medical.png) |
 
 **Backup Veeam**
 
 | Jobs Oracle (Success) | Inventaire 15 VMs | Repository 300 Go |
 |---|---|---|
-| ![](docs/assets/screenshots/veeam-01-jobs-oracle-success.png) | ![](docs/assets/screenshots/veeam-02-inventory-15vms.png) | ![](docs/assets/screenshots/veeam-03-repository.png) |
+| ![](docs/assets/screenshots/veeam/veeam-01-jobs-oracle-success.png) | ![](docs/assets/screenshots/veeam/veeam-02-inventory-15vms.png) | ![](docs/assets/screenshots/veeam/veeam-03-repository.png) |
 
 ---
 

@@ -26,7 +26,7 @@ Une clinique de rééducation devait exposer son **application médicale Oracle*
 **Avant** : Aucun pare-feu, aucune segmentation, postes avec droits admin, DNS vers la box, Oracle exposé sur le LAN.
 
 **Après** : Défense en profondeur sur 6 couches — segmentation VLAN, cluster HA CARP, MFA TOTP obligatoire, SIEM avec 35 règles custom, Active Response automatisé, PRA avec backup CBT, et pentest validant le tout.
-
+➡️ [DAT complet](DAT-Clinique Le Chatelet.pdf)
 ---
 
 ## 🏗️ Architecture

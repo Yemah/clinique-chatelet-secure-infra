@@ -29,7 +29,7 @@ Une clinique de rééducation devait exposer son **application médicale Oracle*
 
 ---
 
-➡️ [DAT complet](https://github.com/Yemah/clinique-chatelet-secure-infra/edit/main/DAT-Clinique Le Chatelet.pdf)
+➡️ [DAT complet](https://github.com/Yemah/clinique-chatelet-secure-infra/blob/main/DAT%20-%20Clinique%20Le%20Chatelet.pdf)
 
 ---
 
